@@ -1,0 +1,6 @@
+package enums;
+
+public enum Tohnoth {
+	MALAM, MICPAL, CHELAN, ARGAL, OTSMA, SHIKLULIT, NIFRAIM, EXOLOGIA, OKETZ, SINAL, NETO_MICPAL
+
+}
