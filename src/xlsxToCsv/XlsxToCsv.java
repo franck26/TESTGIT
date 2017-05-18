@@ -7,6 +7,8 @@ import java.io.FileOutputStream;
 import java.util.Iterator;
 import java.util.Scanner;
 
+import javax.swing.JOptionPane;
+
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -14,11 +16,11 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 /**
  *
- * @author Munawwar
+ * @author franck
  */
 public class XlsxToCsv {
 	
-	static String dossier = "/home/user1/Downloads";
+	static String path = "/home/user1/hevra/shiklulit/karmia/2014";
 
 
 	static void convert(File inputFile, File outputFile) {
@@ -39,37 +41,38 @@ public class XlsxToCsv {
 			while (rowIterator.hasNext()) {
 				row = rowIterator.next();
 
-				// For each row, iterate through each columns
-				Iterator<Cell> cellIterator = row.cellIterator();
-				while (cellIterator.hasNext()) {
-
-					cell = cellIterator.next();
-//					data.append("\"" + cell.getNumericCellValue() + "\",");
-
-					switch (cell.getCellType()) {
-					case Cell.CELL_TYPE_BOOLEAN:
-						data.append(cell.getBooleanCellValue() + ",");
-
-						break;
-					case Cell.CELL_TYPE_NUMERIC:
-						data.append("" + cell.getNumericCellValue() + ",");
-
-						break;
-					case Cell.CELL_TYPE_STRING:
-						data.append("" + cell.getStringCellValue() + ",");
-						break;
-
-					case Cell.CELL_TYPE_BLANK:
-						data.append("" + ",");
-						break;
-					default:
-						data.append(cell + ",");
-
+				for(int i = 0; i <= row.getLastCellNum(); i++)
+					if(row.getCell(i) == null){
+						data.append(",");
 					}
-				}
-				data.append("\n");
-			}
+					else{
+						cell = row.getCell(i);
+							switch (cell.getCellType()) {
+							case Cell.CELL_TYPE_BOOLEAN:
+								data.append("\"" + cell.getBooleanCellValue() + "\",");
 
+								break;
+							case Cell.CELL_TYPE_NUMERIC:
+								data.append("\"" + cell.getNumericCellValue() + "\",");
+
+								break;
+							case Cell.CELL_TYPE_STRING:
+								data.append("\"" + cell.getStringCellValue() + "\",");
+								break;
+
+							case Cell.CELL_TYPE_BLANK:
+								data.append("\"" + "\",");
+								break;
+							default:
+								data.append("\"" + cell + "\",");
+
+							}
+
+							
+						}
+				data.append("\n");
+					}
+			
 			fos.write(data.toString().getBytes());
 			fos.close();
 
@@ -85,7 +88,7 @@ public class XlsxToCsv {
 
 	@SuppressWarnings("resource")
 	public static void main(String[] args) {
-		convertToCsv(dossier);
+		convertToCsv(path);
 	}
 	
 	public static void convertToCsv(String path){
@@ -125,18 +128,27 @@ public class XlsxToCsv {
 						// reading file from desktop
 						File inputFile = new File(listefichiers[i].getAbsolutePath());
 
+						//*/
+						
 						System.out.println(listefichiers[i]);
 
 						Scanner sc = new Scanner(System.in);
 
-						System.out.println("comment renommer le fichier (sans le .csv) : ");
+						System.out.println("מה השם החדש של הקובצ : ");
 
 						String str = sc.nextLine();
 
 						inputFile.renameTo(new File(inputFile.getPath()+File.separator+str));
 
+						//*/
+						
 						// writing excel data to csv
-						//					File outputFile = new File(path + "/" + listefichiers[i].substring(0,listefichiers[i].length()-5) + ".csv");
+						//File outputFile = new File(path + "/" + listefichiers[i].substring(0,listefichiers[i].length()-5) + ".csv");
+						
+//						String [] s = listefichiers[i].getAbsolutePath().split("/");
+//						
+//						String a = JOptionPane.showInputDialog("convertion de " + s[s.length - 1] + " en : ");
+						
 						File outputFile = new File(path + "/" + str + ".csv");
 						convert(inputFile, outputFile);
 					}
