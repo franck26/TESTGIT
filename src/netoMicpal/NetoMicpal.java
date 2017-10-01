@@ -31,6 +31,10 @@ public class NetoMicpal {
 				"  `in_id` int(11) NOT NULL AUTO_INCREMENT,\n" +
 				"  `name_tz` varchar(200) COLLATE utf8_unicode_ci DEFAULT NULL,\n" +
 				"  `mahlaka` varchar(45) COLLATE utf8_unicode_ci DEFAULT NULL,\n" +
+				"  `shem` varchar(45) COLLATE utf8_unicode_ci DEFAULT NULL,\n" +
+				"  `b` varchar(45) COLLATE utf8_unicode_ci DEFAULT NULL,\n" +
+				"  `irgoun` varchar(45) COLLATE utf8_unicode_ci DEFAULT NULL,\n" +
+				"  `briout` varchar(45) COLLATE utf8_unicode_ci DEFAULT NULL,\n" +
 				"  `a` varchar(45) COLLATE utf8_unicode_ci DEFAULT NULL,\n" +
 				"  `bruto` varchar(45) COLLATE utf8_unicode_ci DEFAULT NULL,\n" +
 				"  `mas_hachnassa` varchar(45) COLLATE utf8_unicode_ci DEFAULT NULL,\n" +
@@ -58,7 +62,7 @@ public class NetoMicpal {
 
 	public void load_data_neto(String name_schema,String name_table, int year, String pathfile) throws SQLException {
 			
-		System.out.println("load year : " + year);
+		System.out.println("load neto year : " + year);
 		for (int i = 1; i <= 12; i++) {
 				
 				String a = "LOAD DATA  LOCAL INFILE"
@@ -80,6 +84,27 @@ public class NetoMicpal {
 		tr.Insertintodb1(h);
 
 		h="delete from " + name_schema + ". "+name_table+" where name_tz LIKE '%סך %'  ;";
+		tr.Insertintodb1(h);
+		
+	}
+	
+	public void load_data_neto(String name_schema,String name_table, String pathfile) throws SQLException {
+		
+		System.out.println("load neto ");
+				
+				String a = "LOAD DATA  LOCAL INFILE"
+						+ " '" + pathfile + "/neto/neto.csv'"
+						+ " INTO TABLE  `"+name_schema+"`." + name_table
+						+ "   FIELDS TERMINATED BY ','  ENCLOSED BY  '\"' LINES TERMINATED BY '\n' IGNORE 1 LINES "
+						+ "  (  shem, dyear, num_oved, full_name, mahlaka, name_tz, a, b, m, bruto, mas_hachnassa, leumi, briout, tagmoulim, irgoun, schar_neto, nikouy_aherim, neto_letashlum)"
+						;
+
+				tr.Insertintodb1(a);
+		String z="update  " + name_schema + "."+name_table+"\n" +
+				"set schar_neto = replace(neto_letashlum,',','');";
+		tr.Insertintodb1(z);
+
+		String h="delete from " + name_schema + ". "+name_table+" where name_tz LIKE '%סך %'  ;";
 		tr.Insertintodb1(h);
 		
 	}
@@ -133,8 +158,8 @@ public class NetoMicpal {
 		System.out.println("convert to 101");
 		for (int i = 1; i < 13; i++) {
 			String load = "insert ignore into " + name_schema + "." + name_table_101 + "\n"
-					+ "            (`FullName`,`cid`,`dyear`,`id`,`Symbol`,`SymbolName`,m" + i + ") \n"
-					+ "            SELECT   full_name," + cid + ",`dyear`,`num_oved`, 3000,'נטו',schar_neto\n"
+					+ "            (`FullName`,`cid`,`dyear`,`id`,`Symbol`,`SymbolName`,m" + i + ", num_worker) \n"
+					+ "            SELECT   full_name," + cid + ",`dyear`,`name_tz`, 3000,'נטו',neto_letashlum, num_oved \n"
 					+ "            FROM  "+name_schema+"."+name_table +"  where m=" + i + " \n"
 					+ "            on duplicate key update m" + i + "=values(m" + i + ");";
 			tr.Insertintodb1(load);

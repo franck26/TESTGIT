@@ -59,7 +59,23 @@ public class ConnectionMySql {
 
     
     private ConnectionMySql(){
-    	connectionToDB("192.115.152.50","franck", "franck", "electron26");
+    	
+    	int sharat = 151;
+    	
+    	switch (sharat) {
+		case 151:
+			connectionToDB("141.226.6.125:15166","franck", "franck", "electron26");
+			break;
+			
+		case 150:
+			connectionToDB("141.226.6.125:15006","franck", "root", "kd14NK97");
+			break;
+
+		default:
+			break;
+		}
+    	
+    	System.out.println("שרת " + sharat);
     }
     
     public static  ConnectionMySql getInstance(){			
@@ -74,7 +90,7 @@ public class ConnectionMySql {
     {
         try {
             Class.forName("com.mysql.jdbc.Driver");
-            conn = DriverManager.getConnection("jdbc:mysql://" + mysqlIP + ":12006/" + defaultDbName + "?"
+            conn = DriverManager.getConnection("jdbc:mysql://" + mysqlIP + "/" + defaultDbName + "?"
                     + "user=" + user + "&password=" + pass );
             
             

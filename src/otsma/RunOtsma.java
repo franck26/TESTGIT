@@ -9,37 +9,37 @@ public class RunOtsma {
 
 	static Otsma o = Otsma.getInstance();
 
-	public static void mainOtsma(String name_schema, String shem_hevra) throws SQLException{
+	public static void mainOtsma(String name_schema, String shem_hevra, String pathFile, int year1, int year2, int cid) throws SQLException{
 
 		String name_table = "tbl_" + shem_hevra;
-		String name_table_101 = "tbl_"+ shem_hevra.toUpperCase() + "_101";
+		String name_table_101 = shem_hevra.toUpperCase() + "_101";
 		//		//
-//		o.create_table(name_schema, name_table);
+		o.create_table(name_schema, name_table, cid);
 //		////		
-//		for (int j = 2009; j <= 2009; j++) {
-//			o.load_data_emon(name_schema, name_table,"CHARSET hebrew ", "\r\n", j);
-//		}
+		for (int j = year1; j <= year2; j++) {
+			o.load_data_emon(name_schema, name_table," charset hebrew", "\\n", j, pathFile, cid);
+		}
 //		for (int j = 1; j <= 1; j++) {
-//			o.load_data_emon(name_schema, name_table," ", "\n", j);
+//			o.load_data_emon(name_schema, name_table," ", "\\n", j);
 //		}
 //		
 //		for (int j = 2; j <= 2; j++) {
 //			o.load_data_emon(name_schema, name_table,"CHARSET hebrew ", "\r\n", j);
 //		}
 //		//
-//		o.Malam_replace_comma(name_schema, name_table);
-//
-//
-//		o.create_101(name_schema, name_table_101);
-//		o.convert_to_101_9(name_schema, name_table_101,name_table);
-//
-//		o.update_total(name_schema, name_table_101);
-//		o.update_symbol(name_schema, name_table_101);
-		////		//		
+		o.Malam_replace_comma(name_schema, name_table);
+
+
+		o.create_101(name_schema, name_table_101, cid);
+		o.convert_to_101_9(name_schema, name_table_101,name_table);
+
+		o.update_total(name_schema, name_table_101);
+		o.update_symbol(name_schema, name_table_101);
+		////		//	910790484	
 		List<String> a = new ArrayList<String>();
 		Statement s = o.returnStatement();
 
-		a.addAll(Otsma.create_symbol("franck", name_table_101));
+		a.addAll(Otsma.create_symbol(name_schema, name_table_101));
 
 
 
@@ -51,7 +51,7 @@ public class RunOtsma {
 
 		//              TODO fonction avec le fichier des tat mifal
 
-		System.out.println("finish");
+		System.out.println("finish ALIYAT OTSMA");
 
 	}
 }

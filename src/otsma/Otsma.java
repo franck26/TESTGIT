@@ -28,9 +28,11 @@ public class Otsma {
 		return o;
 	}
 
-	public void create_table(String name_schema, String name_table) throws SQLException {
+	public void create_table(String name_schema, String name_table, int cid) throws SQLException {
 		String a = "CREATE TABLE   if not exists `" + name_schema + "`.`" + name_table + "` (\n"
-				+ "  `in_id` INT NOT NULL AUTO_INCREMENT,\n" + "  `mis_oved` VARCHAR(45) NULL,\n"
+				+ "  `in_id` INT NOT NULL AUTO_INCREMENT,\n" 
+				+ "  `cid` int(10) unsigned NOT NULL DEFAULT '"+cid+"',\n"
+				+ "  `mis_oved` VARCHAR(45) NULL,\n"
 				+ "  `f_name` VARCHAR(45) NULL,\n" + "  `l_name` VARCHAR(45) NULL,\n"
 				+ "  `tat_mifal` VARCHAR(60) NULL,\n" + "  `agaf` VARCHAR(45) NULL,\n"
 				+ "  `machlaka` VARCHAR(45) NULL,\n" + "  `name_machlaka` VARCHAR(45) NULL,\n"
@@ -60,7 +62,7 @@ public class Otsma {
 		tr.Insertintodb1(a);
 	}
 
-	public void load_data_emon(String name_schema, String name_table, String charset, String endLine, int year) throws SQLException {
+	public void load_data_emon(String name_schema, String name_table, String charset, String endLine, int year, String pathFile, int cid) throws SQLException {
 
 		System.out.println("load file in year : " + year);
 
@@ -88,15 +90,18 @@ public class Otsma {
 		// " m10, m11, m12, total, avg, avg_p, sub,dyear) set dyear="+year;
 		// tr.Insertintodb1(b);
 
-		String b = "LOAD DATA LOCAL INFILE " + " '/home/user1/hevra/otsma/mikhlelet/" + year + ".csv' " + 
+		String b = "LOAD DATA LOCAL INFILE " + " '" + pathFile + "/" + year + ".csv' " + 
                         "INTO TABLE "
 				+ name_schema + "." + name_table + " " + charset
-				+ "   FIELDS TERMINATED BY ','  LINES TERMINATED BY '" + endLine + "' IGNORE 1 LINES\n"
-				+ " (mis_oved,f_name,l_name,  tat_mifal, agaf, machlaka, name_machlaka, derog, tear_derog, darga, teor_darga, tchilat_avoda, id, kod_esok, tear_isok, symbol, symbol_name,\n"
-				+ " m2"
-				+ ", m1, m3, m4, m5, m6, m7, m8, m9, \n" 
-                                + " m10, m11, m12, total, avg, avg_p, sub) set dyear="
-				+ year;
+				+ "   FIELDS TERMINATED BY ','enclosed by '\"'LINES TERMINATED BY '" + endLine + "' "
+						+ "IGNORE 1 LINES\n"
+				+ " (mis_oved,"
+				+ "f_name,l_name,  tat_mifal, agaf, machlaka, name_machlaka, derog, tear_derog, darga, teor_darga, tchilat_avoda, id, kod_esok, tear_isok, "
+				+ "symbol, symbol_name,\n"
+				+ " m1"
+				+ ", m2, m3, m4, m5, m6, m7, m8, m9, \n" 
+                                + " m10, m11, m12, total, avg, avg_p, sub) set dyear=" + year +" , cid = " + cid +";";
+		
 		tr.Insertintodb1(b);
 
 		// String b="LOAD DATA LOCAL INFILE "
@@ -115,6 +120,8 @@ public class Otsma {
 
 	public void Malam_replace_comma(String name_schema, String name_table) throws SQLException {
 
+		System.out.println("replace");
+		
 		String a = "update " + name_schema + "." + name_table + "\n" + "set m1=replace(m1,',',''),\n"
 				+ "m2=replace(m2,',',''),\n" + "m3=replace(m3,',',''),\n" + "m3=replace(m3,',',''),\n"
 				+ "m4=replace(m4,',',''),\n" + "m5=replace(m5,',',''),\n" + "m6=replace(m6,',',''),\n"
@@ -124,11 +131,11 @@ public class Otsma {
 
 	}
 
-	public void create_101(String name_schema, String name_table) throws SQLException {
+	public void create_101(String name_schema, String name_table, int cid) throws SQLException {
 
 		String c = "CREATE TABLE if not exists  " + name_schema + ".`" + name_table + "` (\n"
 				+ "  `in_id` int(10) unsigned NOT NULL AUTO_INCREMENT,\n"
-				+ "  `cid` int(10) unsigned NOT NULL,\n"
+				+ "  `cid` int(10) unsigned NOT NULL DEFAULT '"+cid+"',\n"
 				+ "  `dyear` smallint(6) NOT NULL,\n"
 				+ "  `id` int(11) NOT NULL,\n"
 				+ "  `original_id` int(11) DEFAULT NULL,\n"
@@ -181,13 +188,13 @@ public class Otsma {
 				+ "            "
 				+ ""
 				+ ""
-				+ "SELECT concat(f_name,'  ',l_name) , tat_mifal,`dyear`,`mis_oved`,`symbol`, concat(`symbol_name`,' : ',sub),"
+				+ "SELECT concat(f_name,'  ',l_name) , tat_mifal,`dyear`,`mis_oved`,`symbol`, CONCAT(`symbol_name`, IF(sub = '', '', ' : '),  sub) AS symbolname ,"
 				+ "sum(m1),sum(m2),sum(m3),sum(m4),sum(m5),sum(m6),sum(m7),sum(m8),sum(m9),sum(m10),sum(m11), sum(m12)," 
-				+ "sub, id, tat_mifal "
+				+ " IFNULL(sub,''), id, tat_mifal "
 				+ ""
 				+ ""
 				+ "   FROM " + name_schema + "." + name_table 
-				+ "  group by dyear,mis_oved,`symbol`, concat(`symbol_name`,' : ',sub);";
+				+ "  group by dyear,mis_oved,`symbol`, concat(`symbol_name`,' : ',IFNULL(sub,' '));";
 
 		// String load8 = "insert into " + name_schema + "." + name + "\n"
 		// + "
@@ -233,7 +240,7 @@ public class Otsma {
 				+ "SET SymbolName = substring(SymbolName,1,position(':' in SymbolName)-1 )\n"
 				+ "where  type not like '%כמויות%' ;";
                 System.out.println(a);
-		tr.Insertintodb1(a);
+//		tr.Insertintodb1(a);
 
 
 		String b = "  UPDATE " + name_schema + "." + name_tabel + "\n"

@@ -9,7 +9,6 @@
 	<classpathentry kind="lib" path="/home/user1/hevra/xmlbeans-2.3.0.jar"/>
 	<classpathentry kind="lib" path="/home/user1/hevra/poi-ooxml-schemas-3.7-20101029.jar"/>
 	<classpathentry kind="lib" path="/home/user1/hevra/poi-ooxml-3.7-20101029.jar"/>
-	<classpathentry kind="lib" path="/home/user1/hevra/poi-2.0-pre3-20030728.jar/poi-2.0-pre3-20030728.jar"/>
 	<classpathentry kind="lib" path="/home/user1/hevra/poi-3.8-beta2-20110408.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

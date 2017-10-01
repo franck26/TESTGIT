@@ -25,6 +25,10 @@ public class Malam {
 	private static Malam instance = null;
 	private Trysql tr;
 
+	public Trysql getTr() {
+		return tr;
+	}
+
 	public static Malam getInstance(){			
 		if (instance == null)
 		{ 	
@@ -57,19 +61,19 @@ public class Malam {
 	public void Malam_replace_comma(String name_schema, String name_table) throws SQLException {
 
 		String a = "update " + name_schema + "." + name_table + "\n"
-				+ "set m1=replace(m1,',','')\n"
-				//				+ "m2=replace(m2,',',''),\n"
-				//				+ "m3=replace(m3,',',''),\n"
-				//				+ "m3=replace(m3,',',''),\n"
-				//				+ "m4=replace(m4,',',''),\n"
-				//				+ "m5=replace(m5,',',''),\n"
-				//				+ "m6=replace(m6,',',''),\n"
-				//				+ "m7=replace(m7,',',''),\n"
-				//				+ "m8=replace(m8,',',''),\n"
-				//				+ "m9=replace(m9,',',''),\n"
-				//				+ "m10=replace(m10,',',''),\n"
-				//				+ "m11=replace(m11,',',''),\n"
-				//				+ "m12 =replace(m12,',','');"
+				+ "set m1=replace(m1,',',''),\n"
+				+ "m2=replace(m2,',',''),\n"
+				+ "m3=replace(m3,',',''),\n"
+				+ "m3=replace(m3,',',''),\n"
+				+ "m4=replace(m4,',',''),\n"
+				+ "m5=replace(m5,',',''),\n"
+				+ "m6=replace(m6,',',''),\n"
+				+ "m7=replace(m7,',',''),\n"
+				+ "m8=replace(m8,',',''),\n"
+				+ "m9=replace(m9,',',''),\n"
+				+ "m10=replace(m10,',',''),\n"
+				+ "m11=replace(m11,',',''),\n"
+				+ "m12 =replace(m12,',','');"
 				;
 		tr.Insertintodb1(a);
 
@@ -125,24 +129,39 @@ public class Malam {
 
 	}
 
-	public void Malam_load_data_1(String name_schema, int year, String name_table, String kidod) throws SQLException {
+	public void createTableSimple(String nameSchema, String nameTable, String elements) throws SQLException{
+		String a = "CREATE TABLE  if not exists " + nameSchema + ".`" + nameTable + "` (\n";
+
+		String[] elementsTable = elements.split(", ");
+
+		for(int i = 0; i < elementsTable.length; i++){
+			a +="   `" + elementsTable[i] +"` varchar(100) DEFAULT NULL,\n";
+		}
+		a += "   `dyear` varchar(45) DEFAULT NULL\n"
+				+ ") ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;";
+		tr.Insertintodb1(a);
+
+		truncate(nameSchema, nameTable);
+	}
+
+	public void Malam_load_data_1(String name_schema, int year, String name_table, String kidod ) throws SQLException {
 
 		String a = "LOAD DATA  LOCAL INFILE "
-				+ " '/home/user1/hevra/hevroth/amnon/" + year + ".csv'"
+				+ " '/home/user1/hevra/malam/kvoutsat_bar/4/" + year + ".csv'"
 				+ "    INTO TABLE " + name_schema + ".`" + name_table + "` \n"
 				+ kidod
 				+ "    FIELDS TERMINATED BY ','  ENCLOSED BY '\"'\n"
 				+ "	LINES TERMINATED BY '\\n' \n"
-				+ "     IGNORE 6 LINES\n"
+				+ "     IGNORE 5 LINES\n"
 				+ "     ( office_num, office_name, `name`, numWorker, idWorker, m_n, derug, "
 				+ "darga, start_date, vetek, department, unit, symbol_type, symbolName, m1, m1_amount, "
-				+ "m2, m2_amount, m3, m3_amount, m4, m4_amount, m5, m5_amount, m6, m6_amount, m7, m7_amount, "
-				+ "m8, m8_amount, m9, m9_amount, m10, m10_amount, m11, m11_amount, m12, m12_amount, all_sum, all_amount)\n"
-				+ "     set dyear=" + year;
-
-		tr.Insertintodb1(a);
-
-		a = "truncate table " + name_schema + "." + name_table;
+				+ "m2, m2_amount, m3"
+				+ ", m3_amount, m4, m4_amount"
+				+ ", m5, m5_amount, m6, m6_amount, m7, m7_amount, "
+				+ "m8, m8_amount, m9, m9_amount, m10, m10_amount, m11, m11_amount, m12, m12_amount"
+				+ ")\n"
+				+ "     set dyear=" + year + ";";
+		System.out.println(a);
 		tr.Insertintodb1(a);
 	}
 
@@ -194,7 +213,7 @@ public class Malam {
 
 
 
-	public void Malam_insert_into_temp(String name_schema, String name_table_101, String name_table) throws SQLException {
+	public void Malam_insert_into_temp(String name_schema, String name_table_101, String name_table, int cid) throws SQLException {
 
 		String a = "INSERT  INTO `" + name_schema + "`.`" + name_table_101 + "`\n"
 				+ "(\n"
@@ -225,11 +244,14 @@ public class Malam {
 				+ "dyear,idWorker, `name`,\n"
 				+ "SUBSTRING_INDEX(SymbolName,'-',1),\n"
 				+ "SUBSTR(SymbolName,instr(SymbolName,'-')+1,LENGTH(SymbolName)),`symbol_type`,\n"
-				+ "sum(m1) as m1, sum(m2) as m2, sum(m3) as m3, sum(m4) as m4, sum(m5) as m5, sum(m6) as m6, sum(m7) as m7, sum(m8) as m8,\n"
-				+ "sum(m9) as m9, sum(m10) as m10, sum(m11) as m11, sum(m12) as m12, misrad\n"
+				+ "IFNULL(sum(m1), 0) as m1, IFNULL(sum(m2), 0) as m2, IFNULL(sum(m3), 0) as m3, IFNULL(sum(m4), 0) as m4, "
+				+ "IFNULL(sum(m5), 0) as m5, IFNULL(sum(m6), 0) as m6, IFNULL(sum(m7), 0) as m7, IFNULL(sum(m8), 0) as m8,\n"
+				+ "IFNULL(sum(m9), 0) as m9, IFNULL(sum(m10), 0) as m10, IFNULL(sum(m11), 0) as m11, IFNULL(sum(m12), 0) as m12, " + cid + "\n"
 				+ "FROM " + name_schema + "." + name_table + "\n"
 				+ "group by dyear,idWorker,SymbolName,`symbol_type` \n"
 				+ " on duplicate key update m1=values(m1),m2=values(m2),m3=values(m3),m4=values(m4),m5=values(m5),m6=values(m6),m7=values(m7),m8=values(m8),m9=values(m9),m10=values(m10),m11=values(m11),m12=values(m12);";
+
+
 		tr.Insertintodb1(a);
 
 	}
@@ -355,8 +377,8 @@ public class Malam {
 				"`m9`,\n" +
 				"`m10`,\n" +
 				"`m11`,\n" +
-				"`m12`"
-				+ ")\n" +
+				"`m12`"+
+				")\n" +
 
                 "SELECT \n" +
                 "`cid`\n" +              
@@ -365,7 +387,19 @@ public class Malam {
                 "    `FullName`,\n" +
                 "  `Symbol`,\n" +
                 "   `SymbolName`,\n" + 
-                "sum(m1), sum(m2),sum(m3),sum(m4),sum(m5),sum(m6),sum(m7),sum(m8),sum(m9),sum(m10),sum(m11),sum(m12)\n"
+                "sum(m1), "
+                + "sum(m2),"
+                + "sum(m3)"
+                + ","
+                + "sum(m4),"
+                + "sum(m5),"
+                + "sum(m6),"
+                + "sum(m7),"
+                + "sum(m8),"
+                + "sum(m9),"
+                + "sum(m10),"
+                + "sum(m11),"
+                + "sum(m12)\n"
                 +"FROM  `"+name_schema+"`.`"+name_table_temp+"`"
                 + " group by  cid,  dyear, id, Symbol, SymbolName \n";
 
@@ -730,10 +764,10 @@ public class Malam {
 
 		a += "insert ignore into " + name_schema + "." + name_table_101 + "\n"
 				+ "(cid, dyear, id, fullname, symbol, symbolname, m1, num_worker, type"
-								+ ", m2, m3, m4, m5, m6, m7, m8, m9, m10, m11, m12"
+				+ ", m2, m3, m4, m5, m6, m7, m8, m9, m10, m11, m12"
 				+ ")"
-				+"Select misrad, dyear, t_z, shem_oved, substring_index(symbolname, ' - ', 1), substring_index(symbolname, ' - ', -1), m1, mis_oved, soug "
-								+ ", m2, m3, m4, m5, m6, m7, m8, m9, m10, m11, m12 " 
+				+"Select 1, dyear, t_z, shem_oved, substring_index(symbolname, ' - ', 1), substring_index(symbolname, ' - ', -1), m1, mis_oved, soug "
+				+ ", m2, m3, m4, m5, m6, m7, m8, m9, m10, m11, m12 " 
 				+ "From " + name_schema + "." + name_table + ";"
 				;
 

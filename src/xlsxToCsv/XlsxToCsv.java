@@ -21,7 +21,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class XlsxToCsv {
 
-	static String path = "/home/user1/Downloads/test";
+	static String path = "/home/user1/Downloads/ortal";
 
 
 	static void convert(File inputFile, File outputFile) {
@@ -54,18 +54,19 @@ public class XlsxToCsv {
 
 							break;
 						case Cell.CELL_TYPE_NUMERIC:
-							data.append("\"" + cell.getNumericCellValue() + "\",");
+							java.text.DecimalFormat df = new java.text.DecimalFormat("0.##");
+							data.append("\"" + df.format(cell.getNumericCellValue()) + "\",");
 
 							break;
 						case Cell.CELL_TYPE_STRING:
-							data.append("\"" + cell.getStringCellValue() + "\",");
+							data.append("" + cell.getStringCellValue().replace('\'', ' ').replace('"', ' ') + ",");
 							break;
 
 						case Cell.CELL_TYPE_BLANK:
-							data.append("\"" + "\",");
+							data.append("\"\",");
 							break;
 						default:
-							data.append("\"" + cell + "\",");
+							data.append("\"" + cell.getStringCellValue().replace('\'', ' ') + "\",");
 
 						}
 
@@ -84,6 +85,7 @@ public class XlsxToCsv {
 				//				+ "" + inputFile.delete() + " "
 				+ "!\n");
 	}
+	
 
 	// testing the application
 
@@ -96,7 +98,8 @@ public class XlsxToCsv {
 		File repertoire = new File(path);
 
 		if(repertoire.exists()){
-
+			
+			
 			File[] listefichiers;
 
 			int i;
@@ -119,28 +122,15 @@ public class XlsxToCsv {
 						// reading file from desktop
 						File inputFile = new File(listefichiers[i].getAbsolutePath());
 
-						/*/
-
-						System.out.println(listefichiers[i]);
-
-						Scanner sc = new Scanner(System.in);
-
-						System.out.println("מה השם החדש של הקובצ : ");
-
-						String str = sc.nextLine();
-
-						inputFile.renameTo(new File(inputFile.getPath()+File.separator+str));
-
-						//*/
-
-						// writing excel data to csv
-						//File outputFile = new File(path + "/" + listefichiers[i].substring(0,listefichiers[i].length()-5) + ".csv");
-
 						//*/
 						String [] str = listefichiers[i].getAbsolutePath().split("/");
 
-						String a = (String) JOptionPane.showInputDialog("שם חדש של הקובץ : \"" + str[str.length - 1] + "\" (בלי .CSV)");
+						String a = "";
+						a = (String) JOptionPane.showInputDialog("שם חדש של הקובץ : \"" + str[str.length - 1] + "\" (בלי .CSV)");
+
+						boolean exist = false;
 						//*/
+					
 						File outputFile = new File(path + "/" + a + ".csv");
 						convert(inputFile, outputFile);
 					}
@@ -150,6 +140,6 @@ public class XlsxToCsv {
 		}else
 			System.out.println("le fichier n'existe pas !!!");
 
-		System.out.println("finish  !"); 
+		System.out.println("finish  !!!"); 
 	}
 }

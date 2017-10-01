@@ -5,6 +5,7 @@
  */
 package oketz;
 
+import java.io.File;
 import java.sql.SQLException;
 import java.util.ArrayList;
 /**
@@ -20,42 +21,54 @@ public class RunOketz {
 
 
 
-	public void mainOketz() throws SQLException{
+	public void mainOketz(String name_schema, String name_hevra, String name_table, String name_table_101, int cid, String path, int year1, int year2) throws SQLException, InterruptedException{
 
 		System.out.println("oketz");
-		String  name_schema 		=   "franck",
-                name_hevra			=	"raga",
-                name_table 	 		=   "tbl_" + name_hevra,
-                name_table_101     	=   "tbl_" + name_hevra.toUpperCase() + "_101";
-
-		int cid = 930946090;
 		
 		u.create_table_oketz(name_schema, name_table);
 		u.create_table_101_oketz(name_schema, name_table_101);
 		
 
-		for (int j = 2015; j <= 2017; j++) {
+		for (int j = year1; j <= year2; j++) {
+            File f = new File(path + "/"+ j);
             
-            if (j <= 2016){
-                for (int k = 1; k < 13; k++) {         
-                    String a="/home/user1/hevra/oketz/RGA/sahar/"+ j + "/" + k + ".csv";      
+            File[] listefichier = f.listFiles();
+            
+            int i = 0;
+            
+            for (int a = 0; a < listefichier.length; a++){
+            	if (listefichier[a].getAbsolutePath().endsWith(".csv")) {
+            		i++;
+            	}
+            }
+            
+            System.out.println(j + " : " + i + " files .csv");
+                for (int k = 1; k <= i; k++) {  
+                    String a= path + "/"+ j + "/" + k + ".csv";      
                     String[][] mat = u.csv2dar(a, 5000, 8);
                     ArrayList<ArrayList<ArrayList<String>>> al = u.get_the_right_coulms(mat,5000);
 
-                    u.insert(al,name_schema,name_table,cid,j,k);
-                }
-            }
-            else{
-              String a="/home/user1/hevra/oketz/RGA/sahar/"+ j + "/1.csv";      
-              String[][] mat = u.csv2dar(a, 5000, 8);
-              ArrayList<ArrayList<ArrayList<String>>> al = u.get_the_right_coulms(mat,5000);
-
-              u.insert(al,name_schema,name_table,cid,j,1);
+                    u.insert(al,name_schema,name_table_101,cid,j,k);
             }
         }
 
+		u.bituahLeoumiMaavid(name_schema, name_hevra + "_BituahLeumiMaavid", year1, year2, cid, path, name_table_101);
+		
 		u. create_symbels_numbers_and_insert_into_main_table1(name_schema,"temp",name_table_101); 
 		u.Malam_replace_comma(name_schema, name_table_101);
+		
+		u.modifyAgdaroth(path, name_schema, "tbl_hagdaroth_oketz", year1, year2, name_table_101);
+		
 		u.update_total(name_schema, name_table_101);
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 }

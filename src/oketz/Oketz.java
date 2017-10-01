@@ -11,7 +11,10 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Vector;
+
 import mySQL.Trysql;
 import org.apache.commons.lang3.StringEscapeUtils;
 
@@ -65,9 +68,9 @@ public class Oketz {
 		tr.Insertintodb1(b);
 
 		truncate(name_schema, name_table);
-                
-                
-                
+
+
+
 	}
 
 	void truncate(String name_scema, String name_table) throws SQLException {
@@ -254,7 +257,7 @@ public class Oketz {
 				+ "  `type_for_gemel` varchar(400) DEFAULT NULL,\n"
 				+ "  PRIMARY KEY (`in_id`),\n"
 				+ "  UNIQUE KEY `ind_unique` (`cid`,`dyear`,`id`,`Symbol`,`SymbolName`,`division`) USING BTREE,\n"
-				+ "  KEY `indi3` (`cid`,`dyear`,`Symbol`,`SymbolName`)\n"
+				+ "  KEY `indi3` (`cid`,`dyear`,`Symbol`,`SymbolName`), KEY `in2` (`SymbolName`)\n"
 				+ ") ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;";
 		tr.Insertintodb1(a);
 
@@ -731,7 +734,11 @@ public class Oketz {
 
 	public void update_total(String name_schema, String name_table_101) throws SQLException {
 
-		String a = "update " + name_schema + "." + name_table_101 + " set total=m1+m2+m3+m4+m5+m6+m7+m8+m9+m10+m11+m12";
+		String a = "update " + name_schema + "." + name_table_101 + " set total=m1+m2+m3+m4+m5+m6+m7+m8+m9+m10+m11+m12, source = 'original_oketz', num_worker = id ;";
+		System.out.println(a);
+		tr.Insertintodb1(a);
+
+		a = "delete from " + name_schema + "." + name_table_101 + " where m1 = 0 and m2 = 0 and m3 = 0 and m4 = 0 and m5 = 0 and m6 = 0 and m7 = 0 and m8 = 0 and m9 = 0 and m10 = 0 and m11 = 0 and m12 = 0 and total = 0";
 		System.out.println(a);
 		tr.Insertintodb1(a);
 
@@ -753,10 +760,10 @@ public class Oketz {
 	}
 
 	void insert(ArrayList<ArrayList<ArrayList<String>>> al, String name_schema, String name_table, int cid, int year, int month) throws SQLException {
-		
+
 		System.out.println("insert year : " + year + "; month : " + month);
-		
-		
+
+
 		ArrayList<String>sy=new ArrayList<>();
 		String SymbolName=null;
 		int jj=1;
@@ -777,8 +784,6 @@ public class Oketz {
 
 				if (sy.contains(SymbolName))
 				{
-
-
 					SymbolName=SymbolName+""+jj;
 					jj++;
 				}
@@ -786,22 +791,15 @@ public class Oketz {
 
 				sy.add(SymbolName);
 
-
-
-				//            if  (SymbolName.contains("נסיעות"))
-				//            {
-				//            
-				//                System.out.println("gfjhgj");
-				//            
-				//            }
 				String a = "insert into " + name_schema + "." + name_table + " (FullName,id,cid,dyear,SymbolName,m" + month + ")values('" + FullName
 						+ "'," + id
 						+ "," + cid
 						+ ","
 						+ year + ",'"
-						+ SymbolName + "','" + z + "')"
-						+ "on duplicate key update m" + month + "=values(m" + month + ");";
-				System.out.println(a);
+						+ SymbolName + "','" + z + "') "
+						+ ""
+						+ "on duplicate key update m" + month + " = values(m" + month + ");";
+				//				System.out.println(a);
 				tr.Insertintodb1(a);
 			}
 
@@ -949,8 +947,10 @@ public class Oketz {
 				+ "  PRIMARY KEY (`in_id`));";
 
 		tr.Insertintodb1(a);
+
 		String x = "TRUNCATE `" + name_scema + "`.`" + name_tabletemp + "`;";
 		tr.Insertintodb1(x);
+
 		String s = "ALTER TABLE `" + name_scema + "`.`" + name_tabletemp + "`  AUTO_INCREMENT = 2001";
 		tr.Insertintodb1(s);
 
@@ -981,5 +981,218 @@ public class Oketz {
 				+ "m12 =replace(m12,',','');";
 		tr.Insertintodb1(a);
 
+	}
+
+	public void modifyAgdaroth(String path, String name_schema, String string, int year1, int year2, String name_table_101) throws SQLException, InterruptedException {
+
+		String a = 
+				"CREATE TABLE if not exists " + name_schema + "." + string + " ( "
+						+ "`in_id` int(11) NOT NULL AUTO_INCREMENT, "
+						+ "`symbolname` varchar(200) DEFAULT NULL, "
+						+ "`type` varchar(200) DEFAULT NULL, "
+						+ " PRIMARY KEY (`in_id`), KEY `ind` (`symbolname`)"
+						+ ") ENGINE=InnoDB DEFAULT CHARSET=utf8;"
+						+ ""
+						;
+		tr.Insertintodb(a);
+
+		a = "truncate table " + name_schema + "." + string + " ;";
+		tr.Insertintodb(a);
+
+		for(int i = year1; i <= year2; i++){
+			for(int j = 1; j <= 12; j++){
+
+				System.out.println(path+ "/" + i +"/" + j + ".csv'");
+
+				a = "LOAD DATA  LOCAL INFILE '"
+						+ path+ "/" + i +"/" + j + ".csv'"
+						+ " INTO TABLE `" + name_schema + "`." + string
+						+ "   FIELDS TERMINATED BY ','  ENCLOSED BY  '\"' LINES TERMINATED BY '\n' IGNORE 1 LINES "
+						+ "  (symbolname); " ;
+				tr.Insertintodb(a);
+			}
+
+		}
+
+		a = "update " + name_schema + "." + name_table_101 + " set symbolname = replace(symbolname, '\'', '');";
+		tr.Insertintodb(a);
+
+		a = "select * from " + name_schema + "." + string + " ;";
+		ResultSet rs = tr.gettabledb(a);
+
+		Statement s = tr.getStmt();
+
+		Vector<String> tashlum = new Vector<>();
+		Vector<String> reshut = new Vector<>();
+		Vector<String> btlush = new Vector<>();
+		Vector<String> chova = new Vector<>();
+
+		while(rs.next()){
+			//			System.out.println(rs.getString(2));
+			if(rs.getString(2).equals("מספר עובד")){
+				while ( !rs.getString(2).equals("שכר יסוד") ){
+					rs.next();
+				}
+				do{
+					if(!tashlum.contains(rs.getString(2)))
+						tashlum.add(rs.getString(2));
+					rs.next();
+				}while(!rs.getString(2).equals("ברוטו"));
+
+				while (rs.next() && !rs.getString(2).equals("משכורת חייבת ב\"ל")){
+
+				}
+				if(!btlush.contains(rs.getString(2)))
+					btlush.add(rs.getString(2));
+
+				while (rs.next() && !rs.getString(2).equals("סה\"כ ניכויים")){
+					if(!chova.contains(rs.getString(2)))
+						chova.add(rs.getString(2));
+				}
+
+				while (rs.next() && !rs.getString(2).equals("נטו")){
+				}
+
+				while (rs.next() && !rs.getString(2).equals("ניכויי רשות")){
+					if(!reshut.contains(rs.getString(2)))
+						reshut.add(rs.getString(2));
+				}
+			}
+		}
+
+		for (int i = 0; i < tashlum.size(); i++) {
+			tr.Insertintodb("update " + name_schema + "." + string + " set type = ';tlush_tashlum;' where symbolname = '" + tashlum.get(i).replace("'", "") + "' ;");
+
+		}
+
+		for (int i = 0; i < btlush.size(); i++) {
+			tr.Insertintodb("update " + name_schema + "." + string + " set type = ';b_tlush;' where symbolname = '" + btlush.get(i).replace("'", "") + "' ; ");
+		}
+
+		for (int i = 0; i < reshut.size(); i++) {
+			tr.Insertintodb("update " + name_schema + "." + string + " set type = ';tlush_reshut;' where symbolname = '" + reshut.get(i).replace("'", "") + "' ; ");
+		}
+
+		for (int i = 0; i < chova.size(); i++) {
+			tr.Insertintodb("update " + name_schema + "." + string + " set type = ';nikuy_chova;' where symbolname = '" + chova.get(i).replace("'", "") + "' ; ");
+		}
+
+		a = "update " + name_schema + "." + string + " set type = concat(type, ';semelbilo;') where symbolname = 'בל' ;";
+		tr.Insertintodb(a);
+
+		a = "update " + name_schema + "." + string + " set type = ';tlush_neto;' where symbolname = 'נטו לתשלום' ;";
+		tr.Insertintodb(a);
+
+		a = "update " + name_schema + "." + string + " set type = concat(type, ';semelbb;') where symbolname = 'בריאות' ;";
+		tr.Insertintodb(a);
+
+
+		a = "update " + name_schema + "." + string + " set type = concat(type, ';tlush_shovy;') where SymbolName regexp '^שווי'    ; ";
+		tr.Insertintodb(a);
+
+
+		a = "update " + name_schema + "." + string + " set type = concat(type, ';freebil;b_tlush;') where symbolname in ('פדיון חופשה' , 'פיצויים פטור' );";
+		tr.Insertintodb(a);
+
+		
+		a = "update " + name_schema + "." + string + " set type_for_gemel = ';shulam_oved;pensya;sum_shulam;' where symbolname = 'הפקדות עובד';";
+		tr.Insertintodb(a);
+		
+
+		a = "update " + name_schema + "." + name_table_101 + " as t1  inner join (select * from " + name_schema + "." + string + " group by symbolname) as t2  on t1.SymbolName = t2.symbolname set t1.type = t2.type;";
+		tr.Insertintodb(a);
+
+	}
+
+	public void bituahLeoumiMaavid(String name_schema, String string, int year1, int year2, int cid, String path, String name_table_101) throws SQLException {
+		String a = "CREATE TABLE if not exists " + name_schema + "." + string + " (\n" +
+				"  `in_id` int(11) NOT NULL AUTO_INCREMENT,\n" +
+				"  `num_Worker` varchar(200)  DEFAULT NULL,\n" +
+				"  `last_name` varchar(200)  DEFAULT NULL,\n" +
+				"  `is_male` varchar(200)  DEFAULT NULL,\n" +
+				"  `id` varchar(200)  DEFAULT NULL,\n" +
+				"  `first_name` varchar(200)  DEFAULT NULL,\n" +
+				"  `birthday` varchar(200)  DEFAULT NULL,\n" +
+				"  `m1` varchar(200)  DEFAULT NULL,\n" +
+				"  `m2` varchar(200)  DEFAULT NULL,\n" +
+				"  `m3` varchar(200)  DEFAULT NULL,\n" +
+				"  `m4` varchar(200)  DEFAULT NULL,\n" +
+				"  `m5` varchar(200) DEFAULT NULL,\n" +
+				"  `m6` varchar(200)  DEFAULT NULL,\n" +
+				"  `m7` varchar(200)  DEFAULT NULL,\n" +
+				"  `m8` varchar(200) DEFAULT NULL,\n" +
+				"  `m9` varchar(200)  DEFAULT NULL,\n" +
+				"  `m10` varchar(200)  DEFAULT NULL,\n" +
+				"  `m11` varchar(200) DEFAULT NULL,\n" +
+				"  `m12` varchar(200)  DEFAULT NULL,\n" +
+				"  `symbol` varchar(200)  DEFAULT '3000',\n" +
+				"  `symbolName` varchar(200)  DEFAULT 'בל מעביד',\n" +
+				"  `dyear` varchar(200)  DEFAULT NULL,\n" +
+				"  `cid` varchar(200)  DEFAULT NULL,\n" +
+				"  `type` varchar(200)  DEFAULT ';semelbilm;',\n" +
+				"  PRIMARY KEY (`in_id`)\n" +
+				") ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+
+
+
+		tr.Insertintodb(a);
+
+		tr.Insertintodb("truncate table " + name_schema + "." + string + "; ");
+
+		for (int i = year1; i <= year2; i++){
+			a = "LOAD DATA  LOCAL INFILE "
+					+ "'" + path + "/blm/" + i + ".csv'"
+					+ " INTO TABLE `"+name_schema+"`." + string
+					+ "   FIELDS TERMINATED BY ','  ENCLOSED BY  '\"' LINES TERMINATED BY '\n' IGNORE 3 LINES  "
+					+ " (num_worker, last_name, is_male, id, first_name, birthday, m1, m2, m3, m4, m5,"
+					+ " m6, m7, m8, m9, m10, m11, m12) set dyear = " + i + ", cid = " + cid + " ;";
+			tr.Insertintodb1(a);
+		}
+
+		a="delete from `"+name_schema+"`." + string + " where id = ''; ";
+		tr.Insertintodb(a);
+
+		Malam_replace_comma(name_schema, string);
+
+		a= "INSERT INTO " + name_schema + "." + name_table_101 + "\n" +
+				"(\n" +
+				"`cid`,\n" +
+				"`dyear`,\n" +
+				"`id`,\n" +
+				"`FullName`,\n" +
+				"`Symbol`,\n" +
+				"`SymbolName`,\n" +
+				"`m1`,\n" +
+				"`m2`,\n" +
+				"`m3`,\n" +
+				"`m4`,\n" +
+				"`m5`,\n" +
+				"`m6`,\n" +
+				"`m7`,\n" +
+				"`m8`,\n" +
+				"`m9`,\n" +
+				"`m10`,\n" +
+				"`m11`,\n" +
+				"`m12`, num_worker, source, original_id, type) "
+				+ "select `cid`,\n" +
+				"`dyear`,\n" +
+				"`num_worker`,\n" +
+				"concat(last_name, ' ', first_name),\n" +
+				"`Symbol`,\n" +
+				"`SymbolName`,\n" +
+				"`m1`,\n" +
+				"`m2`,\n" +
+				"`m3`,\n" +
+				"`m4`,\n" +
+				"`m5`,\n" +
+				"`m6`,\n" +
+				"`m7`,\n" +
+				"`m8`,\n" +
+				"`m9`,\n" +
+				"`m10`,\n" +
+				"`m11`,\n" +
+				"`m12`, num_worker, 'original_oketz', replace(id, '-', '') , type from " + name_schema + "." + string + " ;";
+
+		tr.Insertintodb(a);
 	}
 }

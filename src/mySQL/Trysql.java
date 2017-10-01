@@ -108,7 +108,7 @@ public class Trysql {
 				connectionMySql.stmt = connectionMySql.conn.createStatement();
 			} catch (SQLException ex) {
 				connectionMySql.stmt=null;
-				System.out.println(ex);  
+				System.out.println(ex + "\n\n\n");  
 			}}
 		try{
 //			System.out.println(request);
@@ -117,7 +117,7 @@ public class Trysql {
 		}catch(SQLException s){
 			System.out.println(s.getSQLState());
 			System.out.println("sql error : " + request + "\n" + s.toString());
-			System.out.println("error") ;
+			System.out.println("error \n\n\n") ;
 		}
 
 	}

@@ -508,23 +508,23 @@ public class Shiklolit {
 		ArrayList<String> reshut = new ArrayList<String>();
 
 		HashMap<String, ArrayList<String>> al2;
-		int index = 1;
+		
 		String a = "SELECT * FROM " + name_schema + "." + name_table;
 		ResultSet rs = tr.gettabledb(a);
 
 		int numLine = 0;
-
+		int index = 1;
 		rs.last();
 
 		numLine = rs.getRow();
 
 		rs.first();
 
-		System.out.println(numLine);
+//		System.out.println(numLine);
 
 		al2 = new HashMap<String, ArrayList<String>>();
 		while (rs.next()) {
-
+			
 			s = rs.getString("name_tz");
 			if (s.contains("מחלקה")) {
 
@@ -532,10 +532,11 @@ public class Shiklolit {
 				while (rs.next()) {
 					if (!rs.getString("name_tz").contains("מחלקה")) {
 
-						String Symbol = rs.getString("name_tz");
+						String symbolName = rs.getString("name_tz");
 
-						if (list.contains(Symbol)) {
-							Symbol = Symbol + " " + index;
+						if (list.contains(symbolName)) {
+							symbolName = symbolName + " " + index;
+							System.out.println(symbolName);
 							index++;
 						}
 
@@ -553,9 +554,9 @@ public class Shiklolit {
 						al1.add(rs.getString("m12"));
 						al1.add(rs.getString("dyear"));
 
-						list.add(Symbol);
+						list.add(symbolName);
 						// לסדר איפה לאפס
-						al2.put(Symbol, al1);
+						al2.put(symbolName, al1);
 
 						al1 = new ArrayList<String>();
 					} else {
@@ -650,7 +651,7 @@ public class Shiklolit {
 				}
 
 
-				//*/
+				//*/ INSERT TO 101 TASHLUMIM
 				aaa = "INSERT INTO `" + name_schema + "`.`" + name_table_101 + "` "
 						+ "(cid,dyear,id,FullName,Symbol,SymbolName"
 						+ ",m1,m2,m3,m4,m5,m6,m7,m8,m9,m10,m11,m12,num_worker) "
@@ -930,14 +931,14 @@ public class Shiklolit {
 
 		s = "insert ignore into " + name_schema + "." + table_101_sofi
 				+ "(cid, dyear, id, original_id, FullName, Symbol, SymbolName, m1, m2, m3, m4, m5, m6, m7, m8, m9, m10, m11, m12, total, division, run_version, date_value, source, type, num_worker, permission, type_for_gemel) "
-				+ "select cid, dyear, id, original_id, FullName, Symbol, SymbolName, m1, m2, m3, m4, m5, m6, m7, m8, m9, m10, m11, m12, total, division, run_version, date_value, source, type, num_worker, permission, type_for_gemel "
+				+ "select cid, dyear, id, original_id, FullName, Symbol, SymbolName, m1, m2, m3, m4, m5, m6, m7, m8, m9, m10, m11, m12, total, division, run_version, date_value,  'original_shiklulit', type, num_worker, permission, type_for_gemel "
 				+ "from " + name_schema + "." + table_tashlum;
 		tr.Insertintodb(s);
 
 
 		s = "insert ignore into " + name_schema + "." + table_101_sofi
 				+ "(cid, dyear, id, original_id, FullName, Symbol, SymbolName, m1, m2, m3, m4, m5, m6, m7, m8, m9, m10, m11, m12, total, division, run_version, date_value, source, type, num_worker, permission, type_for_gemel) "
-				+ "select cid, dyear, id, original_id, FullName, Symbol, SymbolName, m1, m2, m3, m4, m5, m6, m7, m8, m9, m10, m11, m12, total, division, run_version, date_value, source, type, num_worker, permission, type_for_gemel "
+				+ "select cid, dyear, id, original_id, FullName, Symbol, SymbolName, m1, m2, m3, m4, m5, m6, m7, m8, m9, m10, m11, m12, total, division, run_version, date_value, 'original_shiklulit', type, num_worker, permission, type_for_gemel "
 				+ "from " + name_schema + "." + table_tamhir;
 
 		tr.Insertintodb(s);

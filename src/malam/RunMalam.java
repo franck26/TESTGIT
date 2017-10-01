@@ -22,23 +22,51 @@ public class RunMalam {
 	/*
 	 * עםזה אפשר לעלות כל הקבצים שמשתמשים את התוכנת שכר במו החברה DAN
 	 */
-	public void mainDan(String name_schema) throws SQLException {
+	public void mainDan(String name_schema, String name_hevra, String name_table_101, int year1, int year2, int cid ) throws SQLException {
 
-		malam.Malam_create_first_table(name_schema, "amnon");
-		malam.Malam_create_table_get_the_right_coulms(name_schema, "amnon_temp");
-		malam.create_101_avidar(name_schema, "Tbl_amnon_101");
-
-		for (int year = 2016; year <= 2016; year++) {
-			malam.Malam_load_data_1(name_schema, year, "amnon", "");
-			malam.Malam_replace_comma(name_schema, "amnon");
+		String table_temp = name_hevra + "_temp";
+		
+		malam.Malam_create_first_table(name_schema, name_hevra);
+		malam.Malam_create_table_get_the_right_coulms(name_schema, name_hevra + "_temp");
+		malam.create_101_avidar(name_schema, name_table_101);
+//
+		for (int year = year1; year <= year2; year++) {
+			System.out.println(year);
+			malam.Malam_load_data_1(name_schema, year, name_hevra, "" );
 		}
 
-		malam.Malam_insert_into_temp(name_schema, "amnon_temp", "amnon");
-		malam.set_symble(name_schema, "amnon_temp");
-		// u.create_101_malam(name_schema, "Tbl_amnon_101");
-		malam.Malam_insert_into_101_fatal(name_schema, "Tbl_amnon_101", "amnon_temp");
-		malam.update_total(name_schema, "Tbl_amnon_101");
+		malam.Malam_replace_comma(name_schema, name_hevra);
 
+		malam.Malam_insert_into_temp(name_schema, table_temp, name_hevra, cid);
+		malam.set_symble(name_schema, table_temp);
+		// u.create_101_malam(name_schema, "Tbl_amnon_101");
+		malam.insert_into_101_isrotel(name_schema, name_table_101, table_temp);
+		malam.update_total(name_schema, name_table_101);
+		
+//		exology(name_schema, name_table_101, name_hevra);
+	}
+
+	private void exology(String name_schema, String name_table_101, String nameHevra) throws SQLException {
+		
+		String elements = "symbol, symbolname, soug, type";
+		
+		malam.createTableSimple(name_schema, nameHevra + "_exology", elements);
+		
+		String a = "LOAD DATA  LOCAL INFILE "
+				+ " '/home/user1/hevra/malam/kvoutsat_bar/exo.csv'"
+				+ "    INTO TABLE " + name_schema + ".`" + nameHevra + "_exology" + "` \n"
+				+ "    FIELDS TERMINATED BY ','  ENCLOSED BY '\"'\n"
+				+ "	LINES TERMINATED BY '\\n' \n"
+				+ "     IGNORE 5 LINES\n"
+				+ "     ( " + elements 
+				+ ")\n";
+		
+		System.out.println(a);
+		
+		malam.getTr().Insertintodb(a);
+		
+		
+		
 	}
 
 	public void mainFuntazia() throws SQLException {

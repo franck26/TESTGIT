@@ -1102,7 +1102,7 @@ public class Up_load2 {
 				+ "    INTO TABLE " + name_schema + ".`" + name_table + "` \n" + kidod
 				+ "    FIELDS TERMINATED BY ','  ENCLOSED BY '\"'\n" + "	LINES TERMINATED BY '\\n' \n"
 				+ "     IGNORE 8 LINES\n"
-				+ "(mispar_oved, L_name, F_name, ID, Machlaka, Mascoret_neto, Mascoret_Broto,Empty, Bituch_leomi, Tagmolim_pitzum, khl, Mas_sachar, Hetal_oved_zar, Mas_masikim, atoda_lapitzuim, atoda_lachufsha, atoda_lhavraha, sach_alot, alot,dyear) "
+				+ "(mispar_oved, L_name, F_name, ID, Machlaka, Mascoret_neto, Mascoret_Broto,Empty, Bituch_leomi, Tagmolim_pitzum, khl, Mas_sachar, Hetal_oved_zar, Mas_masikim, atoda_lapitzuim, atoda_lachufsha, atoda_lhavraha, sach_alot, alot) "
 				+ "     set dyear=" + year;
 		tr.Insertintodb1(a);
 
@@ -1574,18 +1574,6 @@ public class Up_load2 {
 
 				String f = "select MAX(in_id )from " + name_schema + "." + name_table_101;
 				int l = tr.Readfromdb(f);
-				// String str1="'\"";
-				// String aaaa="update Upload_file."+name_table_101+ "set
-				// fullName=replace(fullName,\"שווי מס רכב -\",\"\") where
-				// in_id="+l; // +l";
-				// tr.Insertintodb1(aaaa);
-				// String aaaaa="update Upload_file."+name_table_101+" set
-				// FullName=replace(fullName,'- שווי רכב','') where in_id="+l;
-				// String aaaaa="update
-				// Upload_file.Tbl_Shiklolit_101_tashlumim_dor_group set
-				// fullName=replace(fullName,\"שווי רכב -\",\"\") where
-				// in_id="+l; // +l";
-				// tr.Insertintodb1(aaaaa);
 				String sss = "  update " + name_schema + "." + name_table_101 + " as t1,(select \n"
 						+ "SUBSTRING_INDEX(SUBSTRING_INDEX(FullName,' - ',1),' ',-1) as num_worker,\n"
 						+ "SUBSTRING_INDEX(SUBSTRING_INDEX(FullName,' - ',2),' ',-1)as id ,\n"
@@ -1598,8 +1586,6 @@ public class Up_load2 {
 				tr.Insertintodb1(sss);
 
 			}
-			// index=1;
-			// list.clear();
 		}
 
 	}
