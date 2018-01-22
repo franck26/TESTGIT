@@ -11,45 +11,44 @@ public class RunOtsma {
 
 	public static void mainOtsma(String name_schema, String shem_hevra, String pathFile, int year1, int year2, int cid) throws SQLException{
 
-		String name_table = "tbl_" + shem_hevra;
-		String name_table_101 = shem_hevra.toUpperCase() + "_101";
-		//		//
-		o.create_table(name_schema, name_table, cid);
-//		////		
-		for (int j = year1; j <= year2; j++) {
-			o.load_data_emon(name_schema, name_table," charset hebrew", "\\n", j, pathFile, cid);
-		}
-//		for (int j = 1; j <= 1; j++) {
-//			o.load_data_emon(name_schema, name_table," ", "\\n", j);
+		String name_table = shem_hevra + "_" + year1 + "_" + year2;
+		String name_table_101 = name_table.toUpperCase() + "_101";
+		
+		String name_table_alphon = "alphon_" + shem_hevra;
+		String name_table_alphon_101 = name_table_alphon + "_101";
+		String charset = "  ";
+				
+//		o.create_table(name_schema, name_table, cid);
+//				
+//		for (int j = year1; j <= year2; j++) {
+//			o.load_data_emon(name_schema, name_table, charset, "\\n", j, pathFile, cid);
 //		}
-//		
-//		for (int j = 2; j <= 2; j++) {
-//			o.load_data_emon(name_schema, name_table,"CHARSET hebrew ", "\r\n", j);
-//		}
-//		//
-		o.Malam_replace_comma(name_schema, name_table);
-
-
-		o.create_101(name_schema, name_table_101, cid);
-		o.convert_to_101_9(name_schema, name_table_101,name_table);
+		
+//		o.Malam_replace_comma(name_schema, name_table);
+////
+////
+//		o.create_101(name_schema, name_table_101, cid);
+//		o.convert_to_101_9(name_schema, name_table_101,name_table);
 
 		o.update_total(name_schema, name_table_101);
 		o.update_symbol(name_schema, name_table_101);
-		////		//	910790484	
-		List<String> a = new ArrayList<String>();
-		Statement s = o.returnStatement();
 
-		a.addAll(Otsma.create_symbol(name_schema, name_table_101));
-
-
-
-		for(int i =0;i<a.size();i++)
-		{
-			System.out.println(a.get(i));
-			System.out.println(s.executeUpdate(a.get(i)) + "\n\n");
-		}
-
-		//              TODO fonction avec le fichier des tat mifal
+		o.modify_symbol_and_hagdaroth(name_schema, name_table_101);
+		
+		
+		//alphon
+		
+//		o.Create_Table_Alphone(name_schema, name_table_alphon);
+//		
+//		for(int i = year1; i <= year2; i++){
+//			o.load_data_Alphone(name_schema, name_table_alphon, i, pathFile);
+//		}
+//		
+//		o.Create_Table_Alphone_101(name_schema, name_table_alphon_101);
+//		
+//		o.convert_Alphone_to_101_details(name_schema, name_table_alphon_101, name_table_alphon, cid);
+		
+//      TODO fonction avec le fichier des tat mifal
 
 		System.out.println("finish ALIYAT OTSMA");
 

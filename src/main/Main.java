@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package MAIN;
+package main;
 
 import chelan.RunChelan;
 import enums.EnumMalam;
@@ -19,7 +19,6 @@ import netoMicpal.RunNetoMicpal;
 import oketz.RunOketz;
 import otsma.RunOtsma;
 import shiklolit.RunShiklolit;
-import xlsxToCsv.XlsxToCsv;
 
 /**
  *
@@ -28,40 +27,41 @@ import xlsxToCsv.XlsxToCsv;
 
 public class Main {
 
-	static boolean insertIn101 = false;
-	
-	static Trysql t = Trysql.getInstance();
 
-	static String name_schema = "franck";
-	static String name_hevra = "vic"
-			+ "";
-	static String name_table = "tbl_" + name_hevra.toLowerCase();
+	static String name_hevra = "avidar" ;
 
-	static String name_table_101 = name_hevra.toUpperCase() + "_101";
-
-	//      tbl_companies
-	static String name_hevra_companies = "מינרב";
-	static int
-	year1               =   2010,
-	year2               =   2015,
-	cid 				=   926582883,
-	hp					= 	520034505;
-
-	static Tohnoth tohnatSahar = Tohnoth.ARGAL;
+	static Tohnoth tohnatSahar = Tohnoth.OTSMA;
 
 	public static void main(String[] args) throws SQLException, ClassNotFoundException, InterruptedException{
+
+		boolean insertIn101 = false;
+		Trysql t = Trysql.getInstance();
+
+		String name_schema = t.getConnectionMySql().getSchema();
+
+		//      tbl_companies
+		String name_hevra_companies = "מתן חן";
+
+		int
+		year1               =   2015,
+		year2               =   2017,
+		cid 				=   932064389,
+		hp					= 	515356962;
+
+		String name_table = name_hevra.toLowerCase() + "_" + year1 + "_" + year2;
+
+		String name_table_101 = name_table.toUpperCase() + "_101";
+
+
 
 		String pathfile = "/home/user1/hevra/" + tohnatSahar.toString().toLowerCase() + "/" + name_hevra;
 		System.out.println(pathfile);
 
-		System.out.println(" you work with : " + name_hevra.toUpperCase() + ", tohnat sachar : " + tohnatSahar.toString() + " מ " + year1 + " עד " + year2 );
+		System.out.println(" you work with : " + name_hevra.toUpperCase() + ", tohnat sachar : " + tohnatSahar.toString() + " מ " + year1 + " עד " + year2 + " in schema \"" + name_schema + "\"");
 		Thread.sleep(5*1000);
 
 		System.out.println("ready ???");
 		Thread.sleep(5*1000);
-
-//		if(tohnatSahar.toString().toLowerCase().equals("micpal"))
-//				XlsxToCsv.convertToCsv(pathfile);
 
 		switch(tohnatSahar){
 
@@ -73,12 +73,21 @@ public class Main {
 			RunExologia.mainExologia(name_schema, "tbl_e_" + name_hevra, "tbl_exology_" + name_hevra.toUpperCase(), pathfile, cid, year1, year2);
 			break;
 
-		case ARGAL : 
-			RunArgal.mainArgal(name_schema, name_hevra, name_table_101, cid, pathfile, year1, year2);
+		case ARGAL :
+
+			String fields = "sikoum, "
+//					+ "tat, "
+										+ "num_worker, "
+//					+ "id, "
+					+ "last_name, first_name, "
+					+ "id, "
+					+ "type, symbol, symbolName, m12, m11, m10, m9, m8, m7, m6, m5, m4, m3, m2, m1";
+
+			RunArgal.mainArgal(name_schema, name_hevra, name_table_101, cid, pathfile, year1, year2, fields);
 			break;
 
 		case OTSMA : 
-						RunOtsma.mainOtsma(name_schema, name_hevra, pathfile, year1, year2, cid);
+			RunOtsma.mainOtsma(name_schema, name_hevra, pathfile, year1, year2, cid);
 			break;
 
 		case CHELAN: 
@@ -93,7 +102,7 @@ public class Main {
 				break;
 
 			case 1 :
-				runChelan.mainChelanPerYear(name_schema, cid, pathfile, name_hevra, year1, year2);
+				runChelan.mainChelanPerYear(name_schema, cid, pathfile, name_table, year1, year2);
 				break;
 
 			}
@@ -105,7 +114,7 @@ public class Main {
 		case MICPAL:
 			RunMicpal runMicpal  =   new RunMicpal();
 
-			int i = 0;
+			int i = 1;
 			switch(i){
 			case 1 :
 				runMicpal.mainMicpalOvdimPerMonths( pathfile,  name_schema, name_table_101, cid, year1, year2);
@@ -116,8 +125,8 @@ public class Main {
 				break;
 			}
 
-//						RunNetoMicpal.mainNeto(name_schema, name_hevra, year1, year2, cid, pathfile, name_table_101, i);
-						
+			RunNetoMicpal.mainNeto(name_schema, name_hevra, year1, year2, cid, pathfile, name_table_101, i);
+
 			break;
 
 		case SHIKLULIT:  
@@ -170,9 +179,9 @@ public class Main {
 			break;
 		} 
 
-		
+
 		if(insertIn101)
-				insertTo101AndSicumimAndCompanies(name_schema, name_table_101, cid, year1, year2, name_hevra_companies);
+			insertTo101AndSicumimAndCompanies(name_schema, name_table_101, cid, year1, year2, name_hevra_companies);
 
 
 		System.out.println("\n\nfinish ! \n\n");
@@ -180,7 +189,7 @@ public class Main {
 
 	}
 
-	
+
 	public static void insertTo101AndSicumimAndCompanies(String name_schema, String name_table_101, int cid, int year1, int year2, String name_hevra_companies) throws SQLException{
 
 		System.out.println("insertTo101AndSicumimAndCompanies");
@@ -232,8 +241,8 @@ public class Main {
 					"`to_edit`,\n" +
 					"`version`,\n" +
 					"`permission`)\n" +
-					
-					
+
+
 					"select "
 					+ ""
 					+ "`cid`,\n" +
@@ -312,9 +321,9 @@ public class Main {
 					"`permission`,\n" +
 					"`type_for_gemel`)\n" +
 					"select " + cid + ", dyear, id, original_id, FullName, Symbol, SymbolName, "
-							+ "m1, m2, m3, m4, m5, m6, m7, m8, m9, m10, m11, m12, total, division, "
-							+ "run_version, date_value, 'original_'" + tohnatSahar.toString().toLowerCase() +", type, num_worker, permission, type_for_gemel "
-					+ "from " + name_schema + "." + name_table_101;
+					+ "m1, m2, m3, m4, m5, m6, m7, m8, m9, m10, m11, m12, total, division, "
+					+ "run_version, date_value, 'original_'" + tohnatSahar.toString().toLowerCase() +", type, num_worker, permission, type_for_gemel "
+					+ "\n\n from " + name_schema + "." + name_table_101;
 			System.out.println(a);
 			t.Insertintodb(a);
 			//		

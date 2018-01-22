@@ -12,18 +12,21 @@ public class RunNetoMicpal {
 
 		n.create_table_neto(name_schema, name_table);
 		n.create_table_101(name_schema, name_table_101);
-		 if (i == 1)
-		for(int year = year1; year <= year2; year++)
+		
+		if (i == 1){
+			for(int year = year1; year <= year2; year++)
 				n.load_data_neto(name_schema, name_table, year, pathfile);
-		 else
-			 n.load_data_neto(name_schema, name_table,  pathfile);
-		 
+		}
+		else{
+			n.load_data_neto(name_schema, name_table,  pathfile);
+		}
+		
 		n.convert_to_101_neto(name_schema, name_table_101, name_table, cid);
-	
-		n.update_total(name_schema, name_table_101, tbl_101_sofy);
-		
+
+		n.update_total(name_schema, name_table_101, tbl_101_sofy, year1, year2, shem_hevra);
+
 		System.out.println("neto shel \"" + shem_hevra + "\" ok");
-		
+
 	}
 
 }

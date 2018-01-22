@@ -5,6 +5,9 @@ import java.sql.*;
 
 public class Trysql {
 	ConnectionMySql connectionMySql;
+	ResultSet rs=null;
+	
+	static Trysql t = null;
 	
 	public ConnectionMySql getConnectionMySql() {
 		return connectionMySql;
@@ -13,10 +16,6 @@ public class Trysql {
 	public void setConnectionMySql(ConnectionMySql connectionMySql) {
 		this.connectionMySql = connectionMySql;
 	}
-
-	ResultSet rs=null;
-	
-	static Trysql t = null;
 
 	private  Trysql(){
 
@@ -29,6 +28,10 @@ public class Trysql {
 			t = new Trysql();
 		}
 		return t;
+	}
+	
+	public void close(){
+		t = null;
 	}
 
 	public Statement getStmt(){

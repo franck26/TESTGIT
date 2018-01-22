@@ -734,7 +734,7 @@ public class Oketz {
 
 	public void update_total(String name_schema, String name_table_101) throws SQLException {
 
-		String a = "update " + name_schema + "." + name_table_101 + " set total=m1+m2+m3+m4+m5+m6+m7+m8+m9+m10+m11+m12, source = 'original_oketz', num_worker = id ;";
+		String a = "update " + name_schema + "." + name_table_101 + " set total=m1+m2+m3+m4+m5+m6+m7+m8+m9+m10+m11+m12, source = 'original_oketz';";
 		System.out.println(a);
 		tr.Insertintodb1(a);
 
@@ -799,7 +799,7 @@ public class Oketz {
 						+ SymbolName + "','" + z + "') "
 						+ ""
 						+ "on duplicate key update m" + month + " = values(m" + month + ");";
-				//				System.out.println(a);
+//								System.out.println(a);
 				tr.Insertintodb1(a);
 			}
 
@@ -983,20 +983,21 @@ public class Oketz {
 
 	}
 
-	public void modifyAgdaroth(String path, String name_schema, String string, int year1, int year2, String name_table_101) throws SQLException, InterruptedException {
+	public void modifyAgdaroth(String path, String name_schema,  int year1, int year2, String name_table_101) throws SQLException, InterruptedException {
 
 		String a = 
-				"CREATE TABLE if not exists " + name_schema + "." + string + " ( "
+				"CREATE TABLE if not exists " + name_schema + ".tbl_hagdaroth_oketz ( "
 						+ "`in_id` int(11) NOT NULL AUTO_INCREMENT, "
 						+ "`symbolname` varchar(200) DEFAULT NULL, "
-						+ "`type` varchar(200) DEFAULT NULL, "
+						+ "`type` varchar(200) DEFAULT '', "
+						+ "`type_for_gemel` varchar(200) DEFAULT '', "
 						+ " PRIMARY KEY (`in_id`), KEY `ind` (`symbolname`)"
 						+ ") ENGINE=InnoDB DEFAULT CHARSET=utf8;"
 						+ ""
 						;
 		tr.Insertintodb(a);
 
-		a = "truncate table " + name_schema + "." + string + " ;";
+		a = "truncate table " + name_schema + ".tbl_hagdaroth_oketz ;";
 		tr.Insertintodb(a);
 
 		for(int i = year1; i <= year2; i++){
@@ -1006,7 +1007,7 @@ public class Oketz {
 
 				a = "LOAD DATA  LOCAL INFILE '"
 						+ path+ "/" + i +"/" + j + ".csv'"
-						+ " INTO TABLE `" + name_schema + "`." + string
+						+ " INTO TABLE `" + name_schema + "`.tbl_hagdaroth_oketz "
 						+ "   FIELDS TERMINATED BY ','  ENCLOSED BY  '\"' LINES TERMINATED BY '\n' IGNORE 1 LINES "
 						+ "  (symbolname); " ;
 				tr.Insertintodb(a);
@@ -1014,10 +1015,10 @@ public class Oketz {
 
 		}
 
-		a = "update " + name_schema + "." + name_table_101 + " set symbolname = replace(symbolname, '\'', '');";
+		a = "update " + name_schema + "." + name_table_101 + " set symbolname = replace(symbolname, \"'\", '');";
 		tr.Insertintodb(a);
 
-		a = "select * from " + name_schema + "." + string + " ;";
+		a = "select * from " + name_schema + ".tbl_hagdaroth_oketz ;";
 		ResultSet rs = tr.gettabledb(a);
 
 		Statement s = tr.getStmt();
@@ -1060,51 +1061,61 @@ public class Oketz {
 			}
 		}
 
+		System.out.println("agdaroth . . . ");
+		
 		for (int i = 0; i < tashlum.size(); i++) {
-			tr.Insertintodb("update " + name_schema + "." + string + " set type = ';tlush_tashlum;' where symbolname = '" + tashlum.get(i).replace("'", "") + "' ;");
+			tr.Insertintodb("update " + name_schema + ".tbl_hagdaroth_oketz set type = ';tlush_tashlum;' where symbolname = '" + tashlum.get(i).replace("'", "") + "' ;");
 
 		}
 
 		for (int i = 0; i < btlush.size(); i++) {
-			tr.Insertintodb("update " + name_schema + "." + string + " set type = ';b_tlush;' where symbolname = '" + btlush.get(i).replace("'", "") + "' ; ");
+			tr.Insertintodb("update " + name_schema + ".tbl_hagdaroth_oketz set type = ';b_tlush;' where symbolname = '" + btlush.get(i).replace("'", "") + "' ; ");
 		}
 
 		for (int i = 0; i < reshut.size(); i++) {
-			tr.Insertintodb("update " + name_schema + "." + string + " set type = ';tlush_reshut;' where symbolname = '" + reshut.get(i).replace("'", "") + "' ; ");
+			tr.Insertintodb("update " + name_schema + ".tbl_hagdaroth_oketz set type = ';tlush_reshut;' where symbolname = '" + reshut.get(i).replace("'", "") + "' ; ");
 		}
 
 		for (int i = 0; i < chova.size(); i++) {
-			tr.Insertintodb("update " + name_schema + "." + string + " set type = ';nikuy_chova;' where symbolname = '" + chova.get(i).replace("'", "") + "' ; ");
+			tr.Insertintodb("update " + name_schema + ".tbl_hagdaroth_oketz set type = ';nikuy_chova;' where symbolname = '" + chova.get(i).replace("'", "") + "' ; ");
 		}
 
-		a = "update " + name_schema + "." + string + " set type = concat(type, ';semelbilo;') where symbolname = 'בל' ;";
+		a = "update " + name_schema + ".tbl_hagdaroth_oketz set type = concat(type, ';semelbilo;') where symbolname = 'בל' ;";
 		tr.Insertintodb(a);
 
-		a = "update " + name_schema + "." + string + " set type = ';tlush_neto;' where symbolname = 'נטו לתשלום' ;";
+		a = "update " + name_schema + ".tbl_hagdaroth_oketz set type = ';tlush_neto;' where symbolname = 'נטו לתשלום' ;";
 		tr.Insertintodb(a);
 
-		a = "update " + name_schema + "." + string + " set type = concat(type, ';semelbb;') where symbolname = 'בריאות' ;";
-		tr.Insertintodb(a);
-
-
-		a = "update " + name_schema + "." + string + " set type = concat(type, ';tlush_shovy;') where SymbolName regexp '^שווי'    ; ";
+		a = "update " + name_schema + ".tbl_hagdaroth_oketz set type = concat(type, ';semelbb;') where symbolname = 'בריאות' ;";
 		tr.Insertintodb(a);
 
 
-		a = "update " + name_schema + "." + string + " set type = concat(type, ';freebil;b_tlush;') where symbolname in ('פדיון חופשה' , 'פיצויים פטור' );";
+		a = "update " + name_schema + ".tbl_hagdaroth_oketz set type = concat(type, ';tlush_shovy;') where SymbolName regexp '^שווי'    ; ";
+		tr.Insertintodb(a);
+
+
+		a = "update " + name_schema + ".tbl_hagdaroth_oketz set type = concat(type, ';freebil;b_tlush;') where symbolname in ('פדיון חופשה' , 'פיצויים פטור' );";
 		tr.Insertintodb(a);
 
 		
-		a = "update " + name_schema + "." + string + " set type_for_gemel = ';shulam_oved;pensya;sum_shulam;' where symbolname = 'הפקדות עובד';";
+		a = "update " + name_schema + ".tbl_hagdaroth_oketz set type = concat(type, ';gmar_heshbon;') where symbolname regexp 'פדיון חופשה' ;";
+		tr.Insertintodb(a);
+			
+		
+		a = "update " + name_schema + ".tbl_hagdaroth_oketz set type_for_gemel = ';shulam_oved;pensya;sum_shulam;' where symbolname = 'הפקדות עובד';";
 		tr.Insertintodb(a);
 		
 
-		a = "update " + name_schema + "." + name_table_101 + " as t1  inner join (select * from " + name_schema + "." + string + " group by symbolname) as t2  on t1.SymbolName = t2.symbolname set t1.type = t2.type;";
+		a = "update " + name_schema + "." + name_table_101 + " as t1  inner join (select * from " + name_schema + ".tbl_hagdaroth_oketz group by symbolname) as t2  "
+				+ "on t1.SymbolName = t2.symbolname "
+				+ "set t1.type = t2.type, t1.type_for_gemel = t2.type_for_gemel;";
 		tr.Insertintodb(a);
 
 	}
 
 	public void bituahLeoumiMaavid(String name_schema, String string, int year1, int year2, int cid, String path, String name_table_101) throws SQLException {
+		System.out.println("bituahLeoumiMaavid");
+		
 		String a = "CREATE TABLE if not exists " + name_schema + "." + string + " (\n" +
 				"  `in_id` int(11) NOT NULL AUTO_INCREMENT,\n" +
 				"  `num_Worker` varchar(200)  DEFAULT NULL,\n" +
@@ -1125,6 +1136,10 @@ public class Oketz {
 				"  `m10` varchar(200)  DEFAULT NULL,\n" +
 				"  `m11` varchar(200) DEFAULT NULL,\n" +
 				"  `m12` varchar(200)  DEFAULT NULL,\n" +
+				"  `a` varchar(200)  DEFAULT NULL,\n" +
+				"  `b` varchar(200)  DEFAULT NULL,\n" +
+				"  `c` varchar(200)  DEFAULT NULL,\n" +
+				"  `d` varchar(200)  DEFAULT NULL,\n" +
 				"  `symbol` varchar(200)  DEFAULT '3000',\n" +
 				"  `symbolName` varchar(200)  DEFAULT 'בל מעביד',\n" +
 				"  `dyear` varchar(200)  DEFAULT NULL,\n" +
@@ -1144,7 +1159,14 @@ public class Oketz {
 					+ "'" + path + "/blm/" + i + ".csv'"
 					+ " INTO TABLE `"+name_schema+"`." + string
 					+ "   FIELDS TERMINATED BY ','  ENCLOSED BY  '\"' LINES TERMINATED BY '\n' IGNORE 3 LINES  "
-					+ " (num_worker, last_name, is_male, id, first_name, birthday, m1, m2, m3, m4, m5,"
+					+ " (num_worker, last_name, first_name,"
+					+ "is_male, "
+					+ "id, "
+					+ " a, "
+					+ "b, "
+					+ "birthday, c, d, "
+//					+ "is_male,"
+					+ "m1, m2, m3, m4, m5,"
 					+ " m6, m7, m8, m9, m10, m11, m12) set dyear = " + i + ", cid = " + cid + " ;";
 			tr.Insertintodb1(a);
 		}
@@ -1153,6 +1175,9 @@ public class Oketz {
 		tr.Insertintodb(a);
 
 		Malam_replace_comma(name_schema, string);
+		
+		a = "update `"+name_schema+"`." + string + " set id = replace(id, '-', '');";
+		tr.Insertintodb(a);
 
 		a= "INSERT INTO " + name_schema + "." + name_table_101 + "\n" +
 				"(\n" +
@@ -1173,10 +1198,10 @@ public class Oketz {
 				"`m9`,\n" +
 				"`m10`,\n" +
 				"`m11`,\n" +
-				"`m12`, num_worker, source, original_id, type) "
+				"`m12`, num_worker, source, type) "
 				+ "select `cid`,\n" +
 				"`dyear`,\n" +
-				"`num_worker`,\n" +
+				"`id`,\n" +
 				"concat(last_name, ' ', first_name),\n" +
 				"`Symbol`,\n" +
 				"`SymbolName`,\n" +
@@ -1191,8 +1216,26 @@ public class Oketz {
 				"`m9`,\n" +
 				"`m10`,\n" +
 				"`m11`,\n" +
-				"`m12`, num_worker, 'original_oketz', replace(id, '-', '') , type from " + name_schema + "." + string + " ;";
+				"`m12`, num_worker, 'original_oketz', type from " + name_schema + "." + string + " ;";
 
 		tr.Insertintodb(a);
+		
+		a = "update " + name_schema + "." + name_table_101 + " as t1 inner join " + name_schema + "." + string + " as t2 on t1.id = t2.num_worker and t1.dyear = t2.dyear "
+				+ " set t1.id = t2.id";
+		tr.Insertintodb(a);
+		
+		
+		a = "insert diff_taxes_reports.tbl_101_details(cid, id, dyear, last_name, first_name, is_male, zikuy_points, num_worker, marital_status, birthday) "
+				+ "select cid, id, dyear, last_name, first_name, if(is_male regexp 'ז', 1, 0), d, num_worker, a, "
+				+ " concat(substring_index(substring_index(birthday, '/', 2), '/', -1), "
+				+ "'/',  "
+				+ "substring_index(birthday, '/', 1), "
+				+ "'/',  "
+				+ "substring_index(birthday, '/', -1)) as birthday  "
+				+ "     from "  + name_schema + "." + string + " ; " ;
+		
+		tr.Insertintodb(a);
+		
+		
 	}
 }

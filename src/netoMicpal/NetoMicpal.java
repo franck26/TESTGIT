@@ -1,5 +1,6 @@
 package netoMicpal;
 
+import java.io.File;
 import java.sql.SQLException;
 
 import mySQL.Trysql;
@@ -63,7 +64,20 @@ public class NetoMicpal {
 	public void load_data_neto(String name_schema,String name_table, int year, String pathfile) throws SQLException {
 			
 		System.out.println("load neto year : " + year);
-		for (int i = 1; i <= 12; i++) {
+		
+		File f = new File(pathfile+ "/" +year+"/neto");
+
+		File[] listefichier = f.listFiles();
+
+		int j = 0;
+
+		for (int a = 0; a < listefichier.length; a++){
+			if (listefichier[a].getAbsolutePath().endsWith(".csv")) {
+				j++;
+			}
+		}
+		
+		for (int i = 1; i <= j; i++) {
 				
 				String a = "LOAD DATA  LOCAL INFILE"
 						+ " '" + pathfile + "/"+year+"/neto/" + i + ".csv'"
@@ -75,7 +89,7 @@ public class NetoMicpal {
 				tr.Insertintodb1(a);
 			}
 		String z="update  " + name_schema + "."+name_table+"\n" +
-				"set schar_neto = replace(neto_letashlum,',','');";
+				"set neto_letashlum = replace(neto_letashlum,',','');";
 		tr.Insertintodb1(z);
 
 		String x="update " + name_schema + ". "+name_table+"  as t2 set num_oved = substring_index(name_tz, ' - ', 1);";
@@ -167,7 +181,7 @@ public class NetoMicpal {
 
 	}
 	
-	public void update_total(String name_schema, String name_table_neto_101, String name_table_101_sofy) throws SQLException {
+	public void update_total(String name_schema, String name_table_neto_101, String name_table_101_sofy, int year1, int year2, String name_hevra) throws SQLException {
 
 		String a = "update " + name_schema + "." + name_table_neto_101 + " set total=m1+m2+m3+m4+m5+m6+m7+m8+m9+m10+m11+m12";
 		tr.Insertintodb1(a);
@@ -208,6 +222,10 @@ public class NetoMicpal {
 				"select cid, dyear, id, original_id, FullName, Symbol, SymbolName, m1, m2, m3, m4, m5, m6, m7, m8, m9, m10, m11, m12, total, division, run_version, date_value, source, type, num_worker, permission, type_for_gemel "
 				+ "from " + name_schema + "." + name_table_neto_101;
 		 tr.Insertintodb(a);
+		 
+		 tr.Insertintodb("UPDATE " + name_schema + "." + name_table_101_sofy + " as t1 inner join " + name_schema + "." + (name_hevra + "_" + year1 +"_" + year2 + "_alphon_101").toUpperCase() + " as t2 "
+					+ "on t1.id = t2.num_worker and t1.dyear = t2.dyear    "
+					+ "set t1.id = t2.id" );
 
 
 	}
