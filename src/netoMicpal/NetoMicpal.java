@@ -81,7 +81,7 @@ public class NetoMicpal {
 				
 				String a = "LOAD DATA  LOCAL INFILE"
 						+ " '" + pathfile + "/"+year+"/neto/" + i + ".csv'"
-						+ " INTO TABLE  `"+name_schema+"`." + name_table
+						+ " INTO TABLE  `"+name_schema+"`." + name_table + "   "
 						+ "   FIELDS TERMINATED BY ','  ENCLOSED BY  '\"' LINES TERMINATED BY '\n' IGNORE 1 LINES "
 						+ "  (  name_tz, mahlaka, a, bruto, mas_hachnassa, leumi, tagmoulim, keren, istadrout, nikouy_aherim, schar_neto,  nikouy_reshut, neto_letashlum)"
 						+ "set dyear="+year+",m=" + i + ";";

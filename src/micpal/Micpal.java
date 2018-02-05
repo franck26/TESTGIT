@@ -222,7 +222,7 @@ public class Micpal{
 
 	}
 
-	public void load_data_micpal_nikouy_hova(String path_file, String name_schema, String name_table_nikuy_hova, int year) throws SQLException{
+	public void load_data_micpal_nikuy_hova(String path_file, String name_schema, String name_table_nikuy_hova, int year) throws SQLException{
 		System.out.println("'" +path_file+  "/"+year+"/chova.csv'");
 
 		String a = "LOAD DATA  LOCAL INFILE "
@@ -525,14 +525,14 @@ public class Micpal{
 			String load = "insert ignore into " + name_schema + "." + name_table_101 + "\n"
 					+ "            (`FullName`,`cid`,`dyear`,`id`, num_worker, `Symbol`,`SymbolName`,m" + i + ", type_for_gemel, source) \n"
 					+ "            SELECT   shem_oved," + cid + ",`dyear`,`id`, `mis_oved`, 3020, concat( shem_kupa,'  ','גמל עובד'),ifnull(sum(tigmulim_oved),0), ';shulam_oved;pensya;sum_shulam;', 'original_micpal'\n"
-					+ "            FROM  " + name_schema + "." + name_table + "  where mis_hodesh=" + i + " group by mis_oved,shnat_mas,shem_kupa\n"
+					+ "            FROM  " + name_schema + "." + name_table + "  where mis_hodesh=" + i + " group by mis_oved,dyear,shem_kupa\n"
 					+ "            on duplicate key update m" + i + "=values(m" + i + ");";
 			t.Insertintodb1(load);
 
 			String load1 = "insert ignore into " + name_schema + "." + name_table_101 + "\n"
 					+ "            (`FullName`,`cid`,`dyear`,`id`, num_worker, `Symbol`,`SymbolName`,m" + i + ", type_for_gemel, source) \n"
 					+ "            SELECT   shem_oved," + cid + ",`dyear`,`id`, mis_oved, 3021,concat( shem_kupa,'  ', 'גמל מעביד'),ifnull(sum(tigmulim_maavid),0), ';shulam_maavid;pensya;sum_shulam;' , 'original_micpal'\n"
-					+ "            FROM  " + name_schema + "." + name_table + "  where mis_hodesh=" + i + " group by mis_oved,shnat_mas,shem_kupa\n"
+					+ "            FROM  " + name_schema + "." + name_table + "  where mis_hodesh=" + i + " group by mis_oved,dyear,shem_kupa\n"
 					+ "            on duplicate key update m" + i + "=values(m" + i + ");";
 			t.Insertintodb1(load1);
 		}
@@ -1014,9 +1014,18 @@ public class Micpal{
 		s = "UPDATE " + name_schema + "." + name_table_101 + " SET type_for_gemel = ';shulam_maavid;pensya;sum_shulam;' WHERE Symbol = 1800;";
 		t.Insertintodb(s);
 
-		s = "UPDATE " + name_schema + "." + name_table_101 + " SET TYPE = ';tlush_tashlum;gmar_heshbon;freeBil;' WHERE Symbolname regexp 'פדיון חופש';";
+		
+		s = "UPDATE " + name_schema + "." + name_table_101 + " SET TYPE = ';tlush_tashlum;hofesh;' WHERE Symbolname regexp 'חופש' and type regexp 'tash';";
+		t.Insertintodb(s);
+		
+		s = "UPDATE " + name_schema + "." + name_table_101 + " SET TYPE = ';tlush_tashlum;gmar_heshbon;freeBil;' WHERE Symbolname regexp 'פדיון חופש' and type regexp 'tash';";
 		t.Insertintodb(s);
 
+		s = "UPDATE " + name_schema + "." + name_table_101 + " SET TYPE = ';tlush_tashlum;avraa_gmar;' WHERE Symbolname regexp 'הבראה' and type regexp 'tash';";
+		t.Insertintodb(s);
+		
+		s = "UPDATE " + name_schema + "." + name_table_101 + " SET TYPE = ';tlush_tashlum;mahala;' WHERE Symbolname regexp 'מחלה' and type regexp 'tash';";
+		t.Insertintodb(s);
 	}
 
 	//alfon
@@ -1162,11 +1171,24 @@ public class Micpal{
 				"`is_male`,\n" +
 				"`marital_status`,\n" +
 				"    zikuy_points, job_precent,    month, start_service_date, finished_service_date)\n" +
-				"SELECT cid, dyear, id, num_worker, substring_index(first_name, ' ', -1), substring_index(first_name, ' ', 1), "
-				+ "  birthday, if(is_male regexp 'ז' , 1, 0), marital_status,    zikuy_points, job_precent,   '0', start_service_date,  finished_service_date      " 
+				"SELECT "
+				+ "cid, "
+				+ "dyear, "
+				+ "id, "
+				+ "num_worker, "
+				+ " first_name, "
+				+ " last_name , "
+				+ "  concat(substring_index(substring_index(birthday, '/', 2), '/', -1), '/', substring_index(birthday, '/', 1), '/19', substring_index(birthday,  '/', -1)) as birthday , "
+				+ "if(is_male regexp 'ז' , 1, 0), "
+				+ "marital_status,    "
+				+ "zikuy_points, "
+				+ "job_precent,   "
+				+ "'0', "
+				+ " concat(substring_index(substring_index(start_service_date, '/', 2), '/', -1), '/', substring_index(start_service_date, '/', 1), '/', if(substring_index(start_service_date,  '/', -1) <= 17 , '20', 19),  substring_index(start_service_date,  '/', -1)) as start_service_date ,  "
+				+ " if(finished_service_date = '', '', concat(substring_index(substring_index(finished_service_date, '/', 2), '/', -1), '/', substring_index(finished_service_date, '/', 1), '/', if(substring_index(finished_service_date,  '/', -1) <= 17 , '20', 19),substring_index(finished_service_date,  '/', -1))) as finished_service_date     " 
 				+ "   FROM  " + name_schema + "." + name_table_alfon + " group by id, dyear ; " ;
 
-//		System.out.println(s);
+		System.out.println(s);
 		
 		t.Insertintodb(s);
 	}
@@ -1190,15 +1212,28 @@ public class Micpal{
 
 	private void loadAlphon(String name_schema, String name_table_alfon, String path_file, int year, int cid) throws SQLException {
 		
-		String path = path_file+ "/alphon/" + year + ".csv";
+		String path = path_file+ "/" + year + "/alphon.csv";
 		System.out.println(path);
 
-		String a = "LOAD DATA  LOCAL INFILE "
-				+ "'" + path + "'"
-				+ " INTO TABLE `"+name_schema+"`." + name_table_alfon
-				+ "   FIELDS TERMINATED BY ','  ENCLOSED BY  '\"' LINES TERMINATED BY '\n' IGNORE 10 LINES  "
-				+ " (num_worker, first_name, mahlaka, id, birthday, start_service_date, finished_service_date, is_male, marital_status, zikuy_points, job_precent, vetek)"
-				+ " set dyear = " + year + ", cid  =  " + cid + " ;";
+		String a = ""
+//				+ "LOAD DATA  LOCAL INFILE "
+//				+ "'" + path + "'"
+//				+ " INTO TABLE `"+name_schema+"`." + name_table_alfon
+//				+ "   FIELDS TERMINATED BY ','  ENCLOSED BY  '\"' LINES TERMINATED BY '\n' IGNORE 10 LINES  "
+//				+ " (num_worker, first_name, mahlaka, id, birthday, start_service_date, finished_service_date, is_male, marital_status, zikuy_points, job_precent, vetek)"
+//				+ " set dyear = " + year + ", cid  =  " + cid + " ;"
++"LOAD DATA  LOCAL INFILE  '" + path + "' \n" +
+" INTO TABLE `"+name_schema+"`." + name_table_alfon + " \n" +
+" FIELDS TERMINATED BY ','  ENCLOSED BY  '\"' LINES TERMINATED BY '\n' IGNORE 1 LINES \n" +
+" (num_worker, first_name, first_name, last_name, id, id, is_male, birthday, birthday, birthday, birthday, birthday, birthday, birthday, birthday, birthday, \n" +
+"  marital_status, zikuy_points, zikuy_points, zikuy_points, zikuy_points, zikuy_points, zikuy_points, zikuy_points, zikuy_points, \n" +
+"  zikuy_points, zikuy_points, zikuy_points, zikuy_points, zikuy_points, zikuy_points, zikuy_points, zikuy_points, zikuy_points, zikuy_points, \n" +
+"  zikuy_points, job_precent, job_precent, job_precent, job_precent, job_precent, job_precent, job_precent, job_precent, job_precent, job_precent, \n" +
+"  job_precent, job_precent, job_precent, job_precent, job_precent, job_precent, job_precent, job_precent, job_precent, \n" +
+"  start_service_date, start_service_date, start_service_date, start_service_date, start_service_date, start_service_date, start_service_date, start_service_date, \n" +
+"  finished_service_date)\n" +
+" set dyear =  " + year + ", cid  =  " + cid + " ;"
+						+ "";
 		t.Insertintodb1(a);
 		
 	}

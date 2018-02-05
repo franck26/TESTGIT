@@ -78,7 +78,7 @@ public class ConnectionMySql {
 			break;
 
 		case "150":
-			host = "192.168.24.150:3306";
+			host = "62.219.41.234:15006";
 			user = "root";
 			password = "kd14NK97";
 			
@@ -86,7 +86,7 @@ public class ConnectionMySql {
 			break;
 
 		case "154":
-			host = "192.168.24.154:3306";//141.226.6.125:15466
+			host = "62.219.41.234:15406";//141.226.6.125:15466
 			user = "root";
 			password = "kq28BF99";
 			

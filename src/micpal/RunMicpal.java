@@ -5,12 +5,9 @@
  */
 package micpal;
 
-import java.io.File;
-import java.io.FileWriter;
 import java.sql.SQLException;
 
 import main.Main;
-import semelim.MainSemelim;
 
 
 public class RunMicpal {
@@ -19,16 +16,16 @@ public class RunMicpal {
 	String name_hevra = Main.getName_hevra();
 
 	String
-	tbl_tashlumim       =   "tbl_tashlumim_" + name_hevra, 
-	tbl_guemel          =   "tbl_gemel_" + name_hevra, 
-	tbl_hova            =   "tbl_hova_" + name_hevra,
-	tbl_reshut          =   "tbl_reshut_" + name_hevra,
-	tbl_ovdim           =   "tbl_ovdim_" + name_hevra,
-	tbl_guemel_101	    =   "tbl_101_guemel_" + name_hevra,
-	tbl_hova_101        =   "tbl_101_hova_" + name_hevra,
-	tbl_reshut_101      =   "tbl_101_reshut_" + name_hevra,
-	tbl_tashlumim_101   =   "tbl_101_tashlumim_" + name_hevra,
-	tbl_ovdim_101       =   "tbl_101_ovdim_" + name_hevra;
+	tbl_tashlumim       =   name_hevra + "_" + "tbl_tashlumim", 
+	tbl_guemel          =   name_hevra + "_" + "tbl_gemel" , 
+	tbl_hova            =   name_hevra + "_" + "tbl_hova"  ,
+	tbl_reshut          =   name_hevra + "_" + "tbl_reshut"  ,
+	tbl_ovdim           =   name_hevra + "_" + "tbl_ovdim"  ,
+	tbl_guemel_101	    =   name_hevra + "_" + "tbl_101_guemel"  ,
+	tbl_hova_101        =   name_hevra + "_" + "tbl_101_hova"  ,
+	tbl_reshut_101      =   name_hevra + "_" + "tbl_101_reshut"  ,
+	tbl_tashlumim_101   =   name_hevra + "_" + "tbl_101_tashlumim"  ,
+	tbl_ovdim_101       =   name_hevra + "_" + "tbl_101_ovdim"  ;
 
 	public RunMicpal() throws SQLException, ClassNotFoundException {
 		this.m = Micpal.getInstance();
@@ -46,9 +43,9 @@ public class RunMicpal {
 ////
 		for (int year = year1; year <= year2 ; year++) {
 			m.load_data_micpal_kupot_gemel(path_file,name_schema,tbl_guemel, year, cid);
-////
+
 //			m.load_data_micpal_tashlumim(path_file,name_schema,tbl_tashlumim,year);
-//			m.load_data_micpal_nikouy_hova(path_file, name_schema, tbl_hova, year);
+//			m.load_data_micpal_nikuy_hova(path_file, name_schema, tbl_hova, year);
 //			m.load_data_micpal_nikuy_reshut(path_file,name_schema,tbl_reshut,year);
 //			m.load_data_micpal_tamhir_ovdim(path_file,name_schema,tbl_ovdim,year);
 //
@@ -87,20 +84,20 @@ public class RunMicpal {
 			throws ClassNotFoundException, SQLException {
 
 		m.create_tabel_micpal_koupot_gemel(name_schema,tbl_guemel);
-		
-//		m.create_tabel_micpal_tashlumim(name_schema,tbl_tashlumim);
-//
-//		m.create_tabel_micpal_nikuy_hova(name_schema, tbl_hova);
-//		m.create_tabel_micpal_nikuy_reshut(name_schema,tbl_reshut);
-//		m.create_tabel_micpal_tamhir_ovdim(name_schema,tbl_ovdim);
-//
-//		m.create_101_micpal_koupot_gemel(name_schema,tbl_guemel_101);
-//		m.create_101_micpal_nikuy_hova(name_schema, tbl_hova_101);
-//		m.create_101_micpal_nikuy_reshut(name_schema,tbl_reshut_101);
-//		m.create_101_micpal_tamhir_ovdim(name_schema,tbl_ovdim_101);
-//		m.create_101_micpal_tashlumim(name_schema,tbl_tashlumim_101);
+//		
+		m.create_tabel_micpal_tashlumim(name_schema,tbl_tashlumim);
 
-//		m.create_101_micpal_sofi(name_schema,tbl_101_sofi);
+		m.create_tabel_micpal_nikuy_hova(name_schema, tbl_hova);
+		m.create_tabel_micpal_nikuy_reshut(name_schema,tbl_reshut);
+		m.create_tabel_micpal_tamhir_ovdim(name_schema,tbl_ovdim);
+
+		m.create_101_micpal_koupot_gemel(name_schema,tbl_guemel_101);
+		m.create_101_micpal_nikuy_hova(name_schema, tbl_hova_101);
+		m.create_101_micpal_nikuy_reshut(name_schema,tbl_reshut_101);
+		m.create_101_micpal_tamhir_ovdim(name_schema,tbl_ovdim_101);
+		m.create_101_micpal_tashlumim(name_schema,tbl_tashlumim_101);
+
+		m.create_101_micpal_sofi(name_schema,tbl_101_sofi);
 	}
 
 	private void insertTo101(String name_schema, String tbl_101_sofi, int year1, int year2, int cid, String tableAlphon)
@@ -115,7 +112,7 @@ public class RunMicpal {
 				"tbl_symbels_ep", tbl_reshut);
 		m.Micpal_to_101_nicoy_reshut(name_schema, cid,tbl_reshut_101,
 				tbl_reshut);
-		//				
+						
 
 		m.insert_total_101_micpal(name_schema,tbl_101_sofi,
 				tbl_tashlumim_101, tbl_hova_101, tbl_reshut_101, tbl_ovdim_101,
@@ -123,8 +120,8 @@ public class RunMicpal {
 
 
 		m.update_total(name_schema, tbl_101_sofi);
-
-
+//
+//
 		m.modifyTypeToExology(name_schema, tbl_101_sofi);
 		
 		m.modifyIdTZ(name_schema, tbl_101_sofi, tableAlphon);

@@ -28,9 +28,10 @@ import shiklolit.RunShiklolit;
 public class Main {
 
 
-	static String name_hevra = "avidar" ;
+	static String name_hevra = "discret" ;
 
-	static Tohnoth tohnatSahar = Tohnoth.OTSMA;
+	static Tohnoth tohnatSahar = Tohnoth.MICPAL
+			;
 
 	public static void main(String[] args) throws SQLException, ClassNotFoundException, InterruptedException{
 
@@ -43,9 +44,9 @@ public class Main {
 		String name_hevra_companies = "מתן חן";
 
 		int
-		year1               =   2015,
+		year1               =   2010,
 		year2               =   2017,
-		cid 				=   932064389,
+		cid 				=   924151814,
 		hp					= 	515356962;
 
 		String name_table = name_hevra.toLowerCase() + "_" + year1 + "_" + year2;

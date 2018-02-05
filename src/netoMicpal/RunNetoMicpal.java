@@ -7,7 +7,7 @@ public class RunNetoMicpal {
 	private static NetoMicpal n =  NetoMicpal.getInstance();
 
 	public static void mainNeto(String name_schema, String shem_hevra, int year1, int year2, int cid, String pathfile, String tbl_101_sofy, int i) throws SQLException{
-		String name_table = "neto_" + shem_hevra;
+		String name_table =  shem_hevra + "_neto_" + year1 + "_" + year2;
 		String name_table_101 = name_table.toUpperCase() + "_101";
 
 		n.create_table_neto(name_schema, name_table);

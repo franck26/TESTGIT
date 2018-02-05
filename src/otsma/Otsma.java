@@ -41,7 +41,7 @@ public class Otsma {
 				+ "  `darga` VARCHAR(45) NULL,\n" + "  `teor_darga` VARCHAR(45) NULL,\n"
 				+ "  `tchilat_avoda` VARCHAR(45) NULL,\n" + "  `id` VARCHAR(45) NULL,\n"
 				+ "  `kod_esok` VARCHAR(45) NULL,\n" + "  `tear_isok` VARCHAR(45) NULL,\n"
-				+ "  `symbol` VARCHAR(45) NULL,\n" + "  `symbol_name` VARCHAR(60) NULL,\n"
+				+ "  `symbol` VARCHAR(45) NULL,\n" + "  `symbolName` VARCHAR(60) NULL,\n"
 				+ "  `m1` VARCHAR(45) NULL,\n" + "  `m2` VARCHAR(45) NULL,\n" + "  `m3` VARCHAR(45) NULL,\n"
 				+ "  `m4` VARCHAR(45) NULL,\n" + "  `m5` VARCHAR(45) NULL,\n" + "  `m6` VARCHAR(45) NULL,\n"
 				+ "  `m7` VARCHAR(45) NULL,\n" + "  `m8` VARCHAR(45) NULL,\n" + "  `m9` VARCHAR(45) NULL,\n"
@@ -66,30 +66,6 @@ public class Otsma {
 	public void load_data_emon(String name_schema, String name_table, String charset, String endLine, int year, String pathFile, int cid) throws SQLException {
 
 		System.out.println("load file in year : " + year);
-
-		// /home/shoshana/Downloads/emon/moked_emon/sacar
-		// String b="LOAD DATA LOCAL INFILE "
-		// + " '/home/shoshana/Downloads/emon/moked_emon/sacar/"+year+".csv'"+
-		// "INTO TABLE `Upload_file`."+name_tabel+" CHARACTER SET hebrew FIELDS
-		// TERMINATED BY ',' ENCLOSED BY '\"' LINES TERMINATED BY '\n' IGNORE 1
-		// LINES\n" +
-		// " (mis_oved, tat_mifal, agaf, machlaka, name_machlaka, derog,
-		// tear_derog, darga, teor_darga, tchilat_avoda, id, kod_esok,
-		// tear_isok, symbol, symbol_name,\n" +
-		// " m1, m2, m3, m4, m5, m6, m7, m8, m9, \n" +
-		// " m10, m11, m12, total, avg, avg_p, sub,dyear) set dyear="+year;
-		// tr.Insertintodb1(b);
-
-		// String b="LOAD DATA LOCAL INFILE "
-		// + " '/home/user1/hevra/otsma/amal/"+year+".csv'"+
-		// "INTO TABLE " + name_schema + "."+name_tabel+" CHARSET hebrew FIELDS
-		// TERMINATED BY ',' LINES TERMINATED BY '\n' IGNORE 1 LINES\n" +
-		// " (mis_oved,f_name,l_name, tat_mifal, agaf, machlaka, name_machlaka,
-		// derog, tear_derog, darga, teor_darga, tchilat_avoda, id, kod_esok,
-		// tear_isok, symbol, symbol_name,\n" +
-		// " m1, m2, m3, m4, m5, m6, m7, m8, m9, \n" +
-		// " m10, m11, m12, total, avg, avg_p, sub,dyear) set dyear="+year;
-		// tr.Insertintodb1(b);
 
 		File f = new File(pathFile + "/"+ year);
 
@@ -116,7 +92,7 @@ public class Otsma {
 					+ "IGNORE 2 LINES\n"
 					+ " (num_worker,"
 					+ "f_name,l_name,  tat_mifal, agaf, machlaka, name_machlaka, derog, tear_derog, darga, teor_darga, tchilat_avoda, id, kod_esok, tear_isok, "
-					+ "symbol, symbol_name,\n"
+					+ "symbol, symbolName,\n"
 					+ " m1"
 					+ ", m2, m3, m4, m5, m6, m7, m8, m9, \n" 
 					+ " m10, m11, m12, total, avg, avg_p, sub) set dyear=" + year +", kovets = " + j +" ;";
@@ -197,24 +173,25 @@ public class Otsma {
 		return o.getTr().getConnectionMySql().getStmt();
 	}
 
-	void convert_to_101_9(String name_schema, String name, String name_table) throws SQLException {
+	void convert_to_101_9(String name_schema, String name_table_101, String name_table) throws SQLException {
 
 		System.out.println("convert to 101");
+		
 
-		String load8 = "insert into " + name_schema + "." + name + "\n"
+		String load8 = "insert into " + name_schema + "." + name_table_101 + "\n"
 				+ "            ( `FullName`,`cid`,`dyear`,`id`,Symbol,`SymbolName`,"
 				+ "m1, m2, m3, m4, m5, m6, m7, m8, m9, m10, m11, m12, "
 				+ "type, num_worker, original_id, source) \n"
 				+ "            \n"
 				+ "\n"
 				+ "\n"
-				+ "SELECT concat(f_name,'  ',l_name) , tat_mifal,`dyear`,`id`,`symbol`, CONCAT(`symbol_name`, IF(sub = '', '', ' : '),  IFNULL(sub,'')) AS symbolname ,"
+				+ "SELECT concat(f_name,'  ',l_name) , tat_mifal,`dyear`,`id`,`symbol`, CONCAT(`symbolName`, IF(sub = '', '', ' : '),  IFNULL(sub,'')) AS symbolname ,"
 				+ "sum(m1),sum(m2),sum(m3),sum(m4),sum(m5),sum(m6),sum(m7),sum(m8),sum(m9),sum(m10),sum(m11), sum(m12)," 
 				+ " IFNULL(sub,''), num_worker, tat_mifal, 'original_otsma' "
 				+ "\n"
 				+ "\n"
 				+ "   FROM " + name_schema + "." + name_table 
-				+ "  group by dyear,id,`symbol`, symbolname;";
+				+ "  group by dyear,id,`symbol`, symbolname, sub ;";
 
 		// String load8 = "insert into " + name_schema + "." + name + "\n"
 		// + "
