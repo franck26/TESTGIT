@@ -40,23 +40,23 @@ public class RunMicpal {
 		tbl_alphon			=	name_hevra + "_" + year1 +"_" + year2 + "_alphon", 
 		tbl_alphon_101		=	tbl_alphon.toUpperCase() + "_101";
 
-//		create_tables(name_schema, tbl_101_sofi);
+		create_tables(name_schema, tbl_101_sofi);
 ////
 		for (int year = year1; year <= year2 ; year++) {
-//			m.load_data_micpal_kupot_gemel(path_file,name_schema,tbl_guemel, year, cid);
+			m.load_data_micpal_kupot_gemel(path_file,name_schema,tbl_guemel, year, cid);
 
-//			m.load_data_micpal_tashlumim(path_file,name_schema,tbl_tashlumim,year);
-//			m.load_data_micpal_nikuy_hova(path_file, name_schema, tbl_hova, year);
-//			m.load_data_micpal_nikuy_reshut(path_file,name_schema,tbl_reshut,year);
-//			m.load_data_micpal_tamhir_ovdim(path_file,name_schema,tbl_ovdim,year);
+			m.load_data_micpal_tashlumim(path_file,name_schema,tbl_tashlumim,year);
+			m.load_data_micpal_nikuy_hova(path_file, name_schema, tbl_hova, year);
+			m.load_data_micpal_nikuy_reshut(path_file,name_schema,tbl_reshut,year);
+			m.load_data_micpal_tamhir_ovdim(path_file,name_schema,tbl_ovdim,year);
 //
 		}
 
 		m.aliaAlphon(path_file, name_schema, tbl_alphon, tbl_alphon_101, year1, year2, cid);
 		
-		m.nohehut(name_schema, tbl_nohehut, tbl_101_sofi, path_file, year1, year2);
+		m.nohehut(name_schema, tbl_nohehut, tbl_101_sofi, path_file, year1, year2, tbl_alphon_101);
 
-//		insertTo101(name_schema, tbl_101_sofi, year1, year2, cid, tbl_alphon_101);
+		insertTo101(name_schema, tbl_101_sofi, year1, year2, cid, tbl_alphon_101);
 
 
 		System.out.println("finish !!");

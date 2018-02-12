@@ -1046,14 +1046,14 @@ public class Micpal{
 				"  `finished_service_date` varchar(50) DEFAULT NULL,\n" +
 				"  `is_male` varchar(50) DEFAULT NULL,\n" +
 				"  `marital_status` varchar(50) DEFAULT NULL,\n" +
-				"  `zikuy_points` varchar(50) DEFAULT NULL,\n" +
-				"  `job_precent` varchar(50) DEFAULT NULL,\n   "
-                        + "`city` varchar(100) DEFAULT NULL,\n" +
-"  `street` varchar(200) DEFAULT NULL,\n" +
-"  `street_num` varchar(45) DEFAULT NULL,\n" +
-"  `zip_code` varchar(45) DEFAULT NULL,\n" +
-"  `phone_munber` varchar(45) DEFAULT NULL,\n" +
-"  `cell_phone` varchar(20) DEFAULT NULL," +
+				"  `zikuy_points` double DEFAULT NULL,\n" +
+				"  `job_precent` double DEFAULT NULL,\n   "
+				+ "`city` varchar(100) DEFAULT NULL,\n" +
+				"  `street` varchar(200) DEFAULT NULL,\n" +
+				"  `street_num` varchar(45) DEFAULT NULL,\n" +
+				"  `zip_code` varchar(45) DEFAULT NULL,\n" +
+				"  `phone_munber` varchar(45) DEFAULT NULL,\n" +
+				"  `cell_phone` varchar(20) DEFAULT NULL," +
 				"  `vetek` varchar(50) DEFAULT NULL,\n" +
 				"  PRIMARY KEY (`in_id`) " +
 				") ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='InnoDB free: 1508352 kB; InnoDB free: 2484224 kB; InnoDB fre';";
@@ -1177,7 +1177,7 @@ public class Micpal{
 				"`is_male`,\n" +
 				"`marital_status`,\n" +
 				"    zikuy_points, job_precent,    month, start_service_date, finished_service_date, street, street_num, city, "
-                        + "zip_code, phone_munber)\n" +
+				+ "zip_code, phone_munber)\n" +
 				"SELECT "
 				+ "cid, "
 				+ "dyear, "
@@ -1193,8 +1193,8 @@ public class Micpal{
 				+ "'0', "
 				+ " concat(substring_index(substring_index(start_service_date, '/', 2), '/', -1), '/', substring_index(start_service_date, '/', 1), '/', if(substring_index(start_service_date,  '/', -1) <= 17 , '20', 19),  substring_index(start_service_date,  '/', -1)) as start_service_date ,  "
 				+ " if(finished_service_date = '', '', concat(substring_index(substring_index(finished_service_date, '/', 2), '/', -1), '/', substring_index(finished_service_date, '/', 1), '/', if(substring_index(finished_service_date,  '/', -1) <= 17 , '20', 19),substring_index(finished_service_date,  '/', -1))) as finished_service_date   "
-                        + ", street, street_num, city, "
-                        + "zip_code, phone_munber  " 
+				+ ", street, street_num, city, "
+				+ "zip_code, phone_munber  " 
 				+ "   FROM  " + name_schema + "." + name_table_alfon + " group by id, dyear ; " ;
 
 		System.out.println(s);
@@ -1260,14 +1260,18 @@ public class Micpal{
 	}
 
 
-	public void nohehut(String name_schema, String name_table_nohehut, String name_table_101_sofy, String path, int year1, int year2) throws SQLException {
+	public void nohehut(String name_schema, String name_table_nohehut, String name_table_101_sofy, String path, int year1, int year2, String name_101_alfon) throws SQLException {
 
 		createTableNohehut(name_schema, name_table_nohehut);
+		
 		for(int i = year1; i <= year2; i++){
-			loadNohehut(name_schema, name_table_101_sofy, path, i);
+
+			System.out.println("load year : " + i);
+			loadNohehut(name_schema, name_table_nohehut, path, i);
 		}
 
-		insertNohehutTo101(name_schema, name_table_nohehut, name_table_101_sofy);
+		System.out.println("insert nohehut to 101");
+		insertNohehutTo101(name_schema, name_table_nohehut, name_table_101_sofy, name_101_alfon);
 
 	}
 
@@ -1278,7 +1282,7 @@ public class Micpal{
 				"  `id` varchar(45) COLLATE utf8_unicode_ci DEFAULT NULL,\n" +
 				"  `fullname` varchar(45) COLLATE utf8_unicode_ci DEFAULT NULL,\n" +
 				"  `m` varchar(45) COLLATE utf8_unicode_ci DEFAULT NULL,\n" +
-				"  `shaoth` varchar(45) CHARACTER SET utf8 DEFAULT NULL,\n" +
+				"  `shaoth` double  DEFAULT NULL,\n" +
 				"  `cid` varchar(45) COLLATE utf8_unicode_ci DEFAULT '924151814',\n" +
 				"  `type` varchar(45) COLLATE utf8_unicode_ci DEFAULT ';shaot_nohehut;',\n" +
 				"  `dyear` varchar(45) COLLATE utf8_unicode_ci DEFAULT NULL,\n" +
@@ -1296,15 +1300,29 @@ public class Micpal{
 		String s = "load data local infile '" + path + "/" + year + "/nohehut.csv' "
 				+ "into table " + name_schema+ "." + name_table + " "
 				+ "FIELDS TERMINATED BY ','  ENCLOSED BY  '\"' LINES TERMINATED BY '\n' IGNORE 1 LINES  "
-				+ "(dyear, dyear,   num_worker, fullname, m, m, shaoth, shaoth, shaoth, shaoth, shaoth, shaoth, shaoth, shaoth, shaoth, shaoth);";
+				+ "(dyear, dyear,   num_worker, fullname, m, m, shaoth, shaoth, shaoth, shaoth, shaoth, shaoth, shaoth, shaoth, shaoth, shaoth) "
+				+ "set id = '0';";
 		t.Insertintodb(s);
 
 	}
 
 
-	public void insertNohehutTo101(String name_schema, String name_table_nohehut, String name_table_101_sofy) throws SQLException{
+	public void insertNohehutTo101(String name_schema, String name_table_nohehut, String name_table_101_sofy, String name_101_alfon) throws SQLException{
+		
+		String a = "update " + name_schema + "." +  name_table_nohehut + " as t1 "
+				+ "inner join " + name_schema + "." + name_101_alfon + " as t2 "
+				+ "on t1.num_worker = t2.num_worker and t1.dyear = t2.dyear    "  
+				+ "set t1.id = t2.id;";
+		
+		t.Insertintodb(a); 
+		
+		a = "delete from " + name_schema + "." +  name_table_nohehut + " where id = '0';";
+		
+		t.Insertintodb(a);
+		
 		for (int i = 1; i <= 12; i++){
-			String s = "insert into " + name_schema + "." + name_table_101_sofy + "   (fullname, id, dyear, cid, symbol, symbolname, m" + i +", type, source, num_worker) \n"
+			String s = "insert into " + name_schema + "." + name_table_101_sofy + "   "
+					+ "(fullname, id, dyear, cid, symbol, symbolname, m" + i +", type, source, num_worker) \n"
 					+ " SELECT fullname, id, dyear, '910280924', 555, 'שעות נוכחות' , shaoth, type, 'original_micpal' , num_worker"
 					+ " FROM " + name_schema + "." +  name_table_nohehut + " where m=" + i + " \n"
 					+ "            on duplicate key update m" + i + "=values(m" + i + ");";
