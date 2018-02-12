@@ -378,14 +378,14 @@ public class Otsma {
 
 	public   String Create_Table_Alphone(String name_schema, String name_table) throws SQLException { 
 
-		System.out.println(" CREATE TABLE if not exists `"+name_schema+"`.`"+name_table);
+		System.out.println(" CREATE TABLE  `"+name_schema+"`.`"+name_table);
 
 		String a = " CREATE TABLE if not exists `"+name_schema+"`.`"+name_table+"` ( \n"
 				+ "`in_id` int(11) NOT NULL AUTO_INCREMENT,\n"
 				+ "`empty` int(11) COLLATE utf8_unicode_ci DEFAULT NULL,\n"
-				+ "`mis_oved` int(11) COLLATE utf8_unicode_ci DEFAULT NULL,\n"
-				+ " `l_name` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,\n"
-				+ " `f_name` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,\n"
+				+ "`num_worker` int(11) COLLATE utf8_unicode_ci DEFAULT NULL,\n"
+				+ " `last_name` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,\n"
+				+ " `first_name` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,\n"
 				+ " `tz` varchar(60) COLLATE utf8_unicode_ci DEFAULT NULL,\n"
 				+ " `sug_tz` varchar(45) COLLATE utf8_unicode_ci DEFAULT NULL,\n"
 				+ " `tz_nosaf` varchar(45) COLLATE utf8_unicode_ci DEFAULT NULL,\n"
@@ -406,7 +406,7 @@ public class Otsma {
 				+ " `teur_tafkid` varchar(45) COLLATE utf8_unicode_ci DEFAULT NULL,\n"
 				+ " `mikum` varchar(45) COLLATE utf8_unicode_ci DEFAULT NULL,\n"
 				+ " `teur_mikum` varchar(45) COLLATE utf8_unicode_ci DEFAULT NULL,\n"
-				+ "`marital` varchar(45) COLLATE utf8_unicode_ci DEFAULT NULL,\n"
+				+ "`marital_status` varchar(45) COLLATE utf8_unicode_ci DEFAULT NULL,\n"
 				+ " `partner_name` varchar(45) COLLATE utf8_unicode_ci DEFAULT NULL,\n"
 				+ " `partner_tz` varchar(45) COLLATE utf8_unicode_ci DEFAULT NULL,\n"
 				+ " `partner_birthday` varchar(45) COLLATE utf8_unicode_ci DEFAULT NULL,\n"
@@ -485,13 +485,13 @@ public class Otsma {
 
 	public   String load_data_Alphone(String name_schema, String name_table, int year, String host) throws SQLException {
 
-		System.out.println("'" + host +"/" + year + "/alphon.csv' ");
+		System.out.println("'" + host +"/alphon/" + year + ".csv' ");
 
 		String b = "LOAD DATA LOCAL INFILE "
-				+ "'" + host +"/" + year + "/alphon.csv' "
+				+ "'" + host +"/alphon/" + year + ".csv' "
 				+ "INTO TABLE `"+name_schema+"`.`"+name_table+"` character set utf8 FIELDS TERMINATED BY ',' ENCLOSED BY '\\\"'  LINES TERMINATED BY '\\n' IGNORE 2 LINES\n" +
-				"(mis_oved, l_name, f_name, tz, sug_tz, tz_nosaf, birthday, age, is_male, start_service_date, vetek, kviut_date, kovea_date, tat_mifal, \n" +
-				"teur_tat_mifal, mahlaka, mahlaka_name, agaf, agaf_name, tafkid, teur_tafkid, mikum, teur_mikum, marital, partner_name, partner_tz, \n" +
+				"(num_worker, last_name, first_name, tz, sug_tz, tz_nosaf, birthday, age, is_male, start_service_date, vetek, kviut_date, kovea_date, tat_mifal, \n" +
+				"teur_tat_mifal, mahlaka, mahlaka_name, agaf, agaf_name, tafkid, teur_tafkid, mikum, teur_mikum, marital_status, partner_name, partner_tz, \n" +
 				"partner_birthday, partner_workplace, partner_known, street, street_num, apart_num, neighborhood, yeshuv, yeshuv_num, mikud, td, td_mikum, mail, phone, \n" +
 				"cellphone, phone_work, cellphone_work, shluca, bank, branch, account_number, status, teur_status, from_date, til_date, reason_quit, kod_quit, teur_quit, \n" +
 				"finished_service_date, derug, teur_derug, darga, teur_darga, darga_date, heskem, teur_heskem, percentage, mone, mehane, kod_bil, kod_irgun, teur, mas_ergun, \n" +
@@ -608,7 +608,7 @@ public class Otsma {
 				"(cid, dyear, id,num_worker, first_name, last_name, aliya_date, marital_status, birthday, age_in_months, another_work, start_service_date, finished_service_date, is_male, \n" +
 				"city, street, street_num, zip_code, phone_munber, cell_phone, bank, branch, account_number, spouse_id, spouse_Lname, spouse_Fname, \n" +
 				"spouse_dob, degree_date, degree_kod, job_precent, vetek, tafkid)\n"
-				+ " SELECT " + cid + ", dyear,tz, mis_oved, f_name, l_name, date_alia, marital , birthday, age*12, misra, start_service_date, finished_service_date,\n" +
+				+ " SELECT " + cid + ", dyear,tz, num_worker, first_name, last_name, date_alia, marital_status , birthday, age*12, misra, start_service_date, finished_service_date,\n" +
 				" IF(is_male regexp 'זכר'  , 1, 0 ) as is_male ,\n" +
 				"yeshuv, street, street_num, mikud, phone, cellphone, bank, branch, account_number, partner_tz, \n" +
 				"substr(partner_name,1, instr(partner_name,' ')) as spouse_Lname, substr(partner_name, instr(partner_name, ' ')+1, length(partner_name))  as spouse_Fname,\n" +

@@ -28,9 +28,10 @@ import shiklolit.RunShiklolit;
 public class Main {
 
 
-	static String name_hevra = "discret" ;
+	static String name_hevra = "golan_telecom" ;
 
 	static Tohnoth tohnatSahar = Tohnoth.MICPAL
+			
 			;
 
 	public static void main(String[] args) throws SQLException, ClassNotFoundException, InterruptedException{
@@ -44,9 +45,9 @@ public class Main {
 		String name_hevra_companies = "מתן חן";
 
 		int
-		year1               =   2010,
+		year1               =   2011,
 		year2               =   2017,
-		cid 				=   924151814,
+		cid 				=   923634554,
 		hp					= 	515356962;
 
 		String name_table = name_hevra.toLowerCase() + "_" + year1 + "_" + year2;
@@ -126,7 +127,7 @@ public class Main {
 				break;
 			}
 
-			RunNetoMicpal.mainNeto(name_schema, name_hevra, year1, year2, cid, pathfile, name_table_101, i);
+//			RunNetoMicpal.mainNeto(name_schema, name_hevra, year1, year2, cid, pathfile, name_table_101, i);
 
 			break;
 

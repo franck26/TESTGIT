@@ -1047,7 +1047,13 @@ public class Micpal{
 				"  `is_male` varchar(50) DEFAULT NULL,\n" +
 				"  `marital_status` varchar(50) DEFAULT NULL,\n" +
 				"  `zikuy_points` varchar(50) DEFAULT NULL,\n" +
-				"  `job_precent` varchar(50) DEFAULT NULL,\n" +
+				"  `job_precent` varchar(50) DEFAULT NULL,\n   "
+                        + "`city` varchar(100) DEFAULT NULL,\n" +
+"  `street` varchar(200) DEFAULT NULL,\n" +
+"  `street_num` varchar(45) DEFAULT NULL,\n" +
+"  `zip_code` varchar(45) DEFAULT NULL,\n" +
+"  `phone_munber` varchar(45) DEFAULT NULL,\n" +
+"  `cell_phone` varchar(20) DEFAULT NULL," +
 				"  `vetek` varchar(50) DEFAULT NULL,\n" +
 				"  PRIMARY KEY (`in_id`) " +
 				") ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='InnoDB free: 1508352 kB; InnoDB free: 2484224 kB; InnoDB fre';";
@@ -1225,7 +1231,7 @@ public class Micpal{
 				+"LOAD DATA  LOCAL INFILE  '" + path + "' \n" +
 				" INTO TABLE `"+name_schema+"`." + name_table_alfon + " \n" +
 				" FIELDS TERMINATED BY ','  ENCLOSED BY  '\"' LINES TERMINATED BY '\n' IGNORE 1 LINES \n" +
-				" (num_worker, first_name, first_name, last_name, id, id, is_male, birthday, birthday, birthday, birthday, birthday, birthday, birthday, birthday, birthday, \n" +
+				" (num_worker, first_name, first_name, last_name, id, id, is_male, street, street, street_num, city, zip_code, phone_munber, birthday, birthday, birthday, \n" +
 				"  marital_status, zikuy_points, zikuy_points, zikuy_points, zikuy_points, zikuy_points, zikuy_points, zikuy_points, zikuy_points, \n" +
 				"  zikuy_points, zikuy_points, zikuy_points, zikuy_points, zikuy_points, zikuy_points, zikuy_points, zikuy_points, zikuy_points, zikuy_points, \n" +
 				"  zikuy_points, job_precent, job_precent, job_precent, job_precent, job_precent, job_precent, job_precent, job_precent, job_precent, job_precent, \n" +

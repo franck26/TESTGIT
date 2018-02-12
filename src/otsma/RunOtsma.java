@@ -30,23 +30,23 @@ public class RunOtsma {
 //		o.create_101(name_schema, name_table_101, cid);
 //		o.convert_to_101_9(name_schema, name_table_101,name_table);
 
-		o.update_total(name_schema, name_table_101);
-		o.update_symbol(name_schema, name_table_101);
-
-		o.modify_symbol_and_hagdaroth(name_schema, name_table_101);
+//		o.update_total(name_schema, name_table_101);
+//		o.update_symbol(name_schema, name_table_101);
+//
+//		o.modify_symbol_and_hagdaroth(name_schema, name_table_101);
 		
 		
 		//alphon
 		
-//		o.Create_Table_Alphone(name_schema, name_table_alphon);
+		o.Create_Table_Alphone(name_schema, name_table_alphon);
 //		
-//		for(int i = year1; i <= year2; i++){
-//			o.load_data_Alphone(name_schema, name_table_alphon, i, pathFile);
-//		}
+		for(int i = year1; i <= year2; i++){
+			o.load_data_Alphone(name_schema, name_table_alphon, i, pathFile);
+		}
 //		
-//		o.Create_Table_Alphone_101(name_schema, name_table_alphon_101);
+		o.Create_Table_Alphone_101(name_schema, name_table_alphon_101);
 //		
-//		o.convert_Alphone_to_101_details(name_schema, name_table_alphon_101, name_table_alphon, cid);
+		o.convert_Alphone_to_101_details(name_schema, name_table_alphon_101, name_table_alphon, cid);
 		
 //      TODO fonction avec le fichier des tat mifal
 
