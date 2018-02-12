@@ -1176,7 +1176,8 @@ public class Micpal{
 				"`birthday`,\n" +
 				"`is_male`,\n" +
 				"`marital_status`,\n" +
-				"    zikuy_points, job_precent,    month, start_service_date, finished_service_date)\n" +
+				"    zikuy_points, job_precent,    month, start_service_date, finished_service_date, street, street_num, city, "
+                        + "zip_code, phone_munber)\n" +
 				"SELECT "
 				+ "cid, "
 				+ "dyear, "
@@ -1191,7 +1192,9 @@ public class Micpal{
 				+ "job_precent,   "
 				+ "'0', "
 				+ " concat(substring_index(substring_index(start_service_date, '/', 2), '/', -1), '/', substring_index(start_service_date, '/', 1), '/', if(substring_index(start_service_date,  '/', -1) <= 17 , '20', 19),  substring_index(start_service_date,  '/', -1)) as start_service_date ,  "
-				+ " if(finished_service_date = '', '', concat(substring_index(substring_index(finished_service_date, '/', 2), '/', -1), '/', substring_index(finished_service_date, '/', 1), '/', if(substring_index(finished_service_date,  '/', -1) <= 17 , '20', 19),substring_index(finished_service_date,  '/', -1))) as finished_service_date     " 
+				+ " if(finished_service_date = '', '', concat(substring_index(substring_index(finished_service_date, '/', 2), '/', -1), '/', substring_index(finished_service_date, '/', 1), '/', if(substring_index(finished_service_date,  '/', -1) <= 17 , '20', 19),substring_index(finished_service_date,  '/', -1))) as finished_service_date   "
+                        + ", street, street_num, city, "
+                        + "zip_code, phone_munber  " 
 				+ "   FROM  " + name_schema + "." + name_table_alfon + " group by id, dyear ; " ;
 
 		System.out.println(s);
