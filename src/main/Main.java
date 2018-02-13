@@ -28,7 +28,7 @@ import shiklolit.RunShiklolit;
 public class Main {
 
 
-	static String name_hevra = "goldan_ker_hatihoun" ;
+	static String name_hevra = "discret" ;
 
 	static Tohnoth tohnatSahar = Tohnoth.MICPAL
 			
@@ -45,9 +45,9 @@ public class Main {
 		String name_hevra_companies = "מתן חן";
 
 		int
-		year1               =   2018,
-		year2               =   2018,
-		cid 				=   935364547;
+		year1               =   2010,
+		year2               =   2017,
+		cid 				=   924151814;
 //		hp					= 	515356962;
 
 		String name_table = name_hevra.toLowerCase() + "_" + year1 + "_" + year2;
@@ -119,7 +119,7 @@ public class Main {
 			int i = 1;
 			switch(i){
 			case 1 :
-//				runMicpal.mainMicpalOvdimPerMonths( pathfile,  name_schema, name_table_101, cid, year1, year2);
+				runMicpal.mainMicpalOvdimPerMonths( pathfile,  name_schema, name_table_101, cid, year1, year2);
 				break;
 
 			case 0 : 
