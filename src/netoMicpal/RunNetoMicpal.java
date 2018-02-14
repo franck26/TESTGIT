@@ -15,6 +15,7 @@ public class RunNetoMicpal {
 		
 		if (i == 1){
 			for(int year = year1; year <= year2; year++)
+				
 				n.load_data_neto(name_schema, name_table, year, pathfile);
 		}
 		else{
