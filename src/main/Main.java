@@ -47,8 +47,8 @@ public class Main {
 		int
 		year1               =   2010,
 		year2               =   2017,
-		cid 				=   924151814;
-//		hp					= 	515356962;
+		cid 				=   924151814,
+		hp					= 	515356962;
 
 		String name_table = name_hevra.toLowerCase() + "_" + year1 + "_" + year2;
 
@@ -183,7 +183,7 @@ public class Main {
 
 
 		if(insertIn101)
-			insertTo101AndSicumimAndCompanies(name_schema, name_table_101, cid, year1, year2, name_hevra_companies);
+			insertTo101AndSicumimAndCompanies(t, name_schema, name_table_101, cid, year1, year2, name_hevra_companies, hp);
 
 
 		System.out.println("\n\nfinish ! \n\n");
@@ -192,7 +192,7 @@ public class Main {
 	}
 
 
-	public static void insertTo101AndSicumimAndCompanies(String name_schema, String name_table_101, int cid, int year1, int year2, String name_hevra_companies) throws SQLException{
+	public static void insertTo101AndSicumimAndCompanies(Trysql t, String name_schema, String name_table_101, int cid, int year1, int year2, String name_hevra_companies, int hp) throws SQLException{
 
 		System.out.println("insertTo101AndSicumimAndCompanies");
 
