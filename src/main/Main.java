@@ -28,7 +28,7 @@ import shiklolit.RunShiklolit;
 public class Main {
 
 
-	static String name_hevra = "discret" ;
+	static String name_hevra = "lotan" ;
 
 	static Tohnoth tohnatSahar = Tohnoth.MICPAL
 			
@@ -45,9 +45,9 @@ public class Main {
 		String name_hevra_companies = "מתן חן";
 
 		int
-		year1               =   2010,
-		year2               =   2017,
-		cid 				=   924151814,
+		year1               =   2016,
+		year2               =   2016,
+		cid 				=   910280924,
 		hp					= 	515356962;
 
 		String name_table = name_hevra.toLowerCase() + "_" + year1 + "_" + year2;
@@ -56,7 +56,7 @@ public class Main {
 
 
 
-		String pathfile = "/home/user1/hevra/" + tohnatSahar.toString().toLowerCase() + "/" + name_hevra;
+		String pathfile = "/home/franck/Desktop/hevra/" + tohnatSahar.toString().toLowerCase() + "/" + name_hevra;
 		System.out.println(pathfile);
 
 		System.out.println(" you work with : " + name_hevra.toUpperCase() + ", tohnat sachar : " + tohnatSahar.toString() + " מ " + year1 + " עד " + year2 + " in schema \"" + name_schema + "\"");
@@ -115,7 +115,7 @@ public class Main {
 
 		case MICPAL:
 			RunMicpal runMicpal  =   new RunMicpal();
-
+                        boolean neto = true;
 			int i = 1;
 			switch(i){
 			case 1 :
@@ -127,7 +127,8 @@ public class Main {
 				break;
 			}
 
-			RunNetoMicpal.mainNeto(name_schema, name_hevra, year1, year2, cid, pathfile, name_table_101, i);
+                        if(neto)
+                          RunNetoMicpal.mainNeto(name_schema, name_hevra, year1, year2, cid, pathfile, name_table_101, i);
 
 			break;
 
