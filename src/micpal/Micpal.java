@@ -535,6 +535,22 @@ public class Micpal{
 					+ "            FROM  " + name_schema + "." + name_table + "  where mis_hodesh=" + i + " group by mis_oved,dyear,shem_kupa\n"
 					+ "            on duplicate key update m" + i + "=values(m" + i + ");";
 			t.Insertintodb1(load1);
+                        
+                        String load2 = "insert ignore into " + name_schema + "." + name_table_101 + "\n"
+					+ "            (`FullName`,`cid`,`dyear`,`id`, num_worker, `Symbol`,`SymbolName`,m" + i + ", type_for_gemel, source) \n"
+					+ "            SELECT   shem_oved," + cid + ",`dyear`,`id`, `mis_oved`, 3023, concat( shem_kupa,'  ','פיצויים'),"
+                                + "ifnull(sum(pitzuim),0), '', 'original_micpal'\n"
+					+ "            FROM  " + name_schema + "." + name_table + "  where mis_hodesh=" + i + " group by mis_oved,dyear,shem_kupa\n"
+					+ "            on duplicate key update m" + i + "=values(m" + i + ");";
+			t.Insertintodb1(load2);
+
+			String load3 = "insert ignore into " + name_schema + "." + name_table_101 + "\n"
+					+ "            (`FullName`,`cid`,`dyear`,`id`, num_worker, `Symbol`,`SymbolName`,m" + i + ", type_for_gemel, source) \n"
+					+ "            SELECT   shem_oved," + cid + ",`dyear`,`id`, mis_oved, 3025,concat( shem_kupa,'  ', 'שכר שבגינו מפקידים לקופה'),"
+                                + "ifnull(sum(sachar_mafkidim_lakupa),0), '' , 'original_micpal'\n"
+					+ "            FROM  " + name_schema + "." + name_table + "  where mis_hodesh=" + i + " group by mis_oved,dyear,shem_kupa\n"
+					+ "            on duplicate key update m" + i + "=values(m" + i + ");";
+			t.Insertintodb1(load3);
 		}
 	}
 
@@ -542,7 +558,7 @@ public class Micpal{
 
 
 		System.out.println("convert tashlumim to 101");
-		for (int i = 1; i < 13; i++) {
+		for (int i = 1; i <= 12; i++) {
 			String load = "insert ignore into "+name_schema+"." + name_table + "\n"
 					+ "            (`FullName`,`cid`,`dyear`,`id`, num_worker, `Symbol`,`SymbolName`,m" + i + ",type,source) \n"
 					+ "            SELECT   full_name," + cid + ",`dyear`,`id_Worker`, id_Worker, `symbol`,`symbolName`,`value`,';tlush_tashlum;', 'original_micpal'\n"
@@ -607,37 +623,37 @@ public class Micpal{
 			String a = "insert ignore into "+name_schema+"."+name_table_101+"\n"
 					+ "            (`FullName`,`cid`,`dyear`,`id`, num_worker, `Symbol`,`SymbolName`,m" + i + ",type,source) \n"
 					+ "   SELECT   shem_oved," + cid + "  as cid,`shnat_mas`,`mis_oved`, `mis_oved`,'1500' as Symbol,'עלות'  as SymbolName \n"
-					+ "   ,alut,'תמחיר עובדים ','original_micpal'  FROM "+name_schema+"."+name_table +" where mis_hodesh=" + i + " \n"
+					+ "   ,sum(alut),'תמחיר עובדים ','original_micpal'  FROM "+name_schema+"."+name_table +" where mis_hodesh=" + i + " group by mis_oved, shnat_mas \n"
 					+ "    on duplicate key update m" + i + "=values(m" + i + ");";
 			t.Insertintodb1(a);
 			String b = "insert ignore into "+name_schema+"."+name_table_101+"\n"
 					+ "            (`FullName`,`cid`,`dyear`,`id`,num_worker, `Symbol`,`SymbolName`,m" + i + ",type,source) \n"
 					+ "   SELECT   shem_oved," + cid + " as cid,`shnat_mas`,`mis_oved`, `mis_oved`,'1600' as Symbol,'סיכום ברוטו'  as SymbolName \n"
-					+ "   ,sikum_bruto,'תמחיר עובדים ','original_micpal'  FROM "+name_schema+"."+name_table +" where mis_hodesh=" + i + " \n"
+					+ "   ,sum(sikum_bruto),';b_tlush;','original_micpal'  FROM "+name_schema+"."+name_table +" where mis_hodesh=" + i + " group by mis_oved, shnat_mas  \n"
 					+ "    on duplicate key update m" + i + "=values(m" + i + ");";
 			t.Insertintodb1(b);
 			String c = "insert ignore into "+name_schema+"."+name_table_101+"\n"
 					+ "            (`FullName`,`cid`,`dyear`,`id`,num_worker, `Symbol`,`SymbolName`,m" + i + ",type,source) \n"
 					+ "   SELECT   shem_oved," + cid + " as cid,`shnat_mas`,`mis_oved`, `mis_oved`,'1700' as Symbol,'סיכום תגמולים'  as SymbolName \n"
-					+ "   ,sikum_tigmulim,'תמחיר עובדים ','original_micpal'  FROM "+name_schema+"."+name_table +" where mis_hodesh=" + i + " \n"
+					+ "   ,sum(sikum_tigmulim),'תמחיר עובדים ','original_micpal'  FROM "+name_schema+"."+name_table +" where mis_hodesh=" + i + " group by mis_oved, shnat_mas  \n"
 					+ "    on duplicate key update m" + i + "=values(m" + i + ");";
 			t.Insertintodb1(c);
 			String d = "insert ignore into "+name_schema+"."+name_table_101+"\n"
 					+ "            (`FullName`,`cid`,`dyear`,`id`,num_worker, `Symbol`,`SymbolName`,m" + i + ",type,source) \n"
 					+ "   SELECT   shem_oved," + cid + " as cid,`shnat_mas`,`mis_oved`, `mis_oved`,'1800' as Symbol,'סיכום פיצוים'  as SymbolName \n"
-					+ "   ,sikum_pitzuim,'תמחיר עובדים ','original_micpal'  FROM "+name_schema+"."+name_table +" where mis_hodesh=" + i + " \n"
+					+ "   ,sum(sikum_pitzuim),'תמחיר עובדים ','original_micpal'  FROM "+name_schema+"."+name_table +" where mis_hodesh=" + i + " group by mis_oved, shnat_mas  \n"
 					+ "    on duplicate key update m" + i + "=values(m" + i + ");";
 			t.Insertintodb1(d);
 			String e = "insert ignore into "+name_schema+"."+name_table_101+"\n"
 					+ "            (`FullName`,`cid`,`dyear`,`id`,num_worker, `Symbol`,`SymbolName`,m" + i + ",type,source) \n"
 					+ "   SELECT   shem_oved," + cid + " as cid,`shnat_mas`,`mis_oved`, `mis_oved`,'1900' as Symbol,'סיכום שונות'  as SymbolName \n"
-					+ "   ,sikum_shonot,'תמחיר עובדים ','original_micpal'  FROM "+name_schema+"."+name_table +" where mis_hodesh=" + i + " \n"
+					+ "   ,sum(sikum_shonot),'תמחיר עובדים ','original_micpal'  FROM "+name_schema+"."+name_table +" where mis_hodesh=" + i + " group by mis_oved, shnat_mas  \n"
 					+ "    on duplicate key update m" + i + "=values(m" + i + ");";
 			t.Insertintodb1(e);
 			String f = "insert ignore into "+name_schema+"."+name_table_101+"\n"
 					+ "            (`FullName`,`cid`,`dyear`,`id`,num_worker, `Symbol`,`SymbolName`,m" + i + ",type,source) \n"
 					+ "   SELECT   shem_oved," + cid + " as cid,`shnat_mas`,`mis_oved`,`mis_oved`, '2000' as Symbol,'סיכום ביטוח לאומי מעביד'  as SymbolName \n"
-					+ "   ,sikum_bituah_leumi_maavid,'תמחיר עובדים ','original_micpal'  FROM "+name_schema+"."+name_table +" where mis_hodesh=" + i + " \n"
+					+ "   ,sum(sikum_bituah_leumi_maavid),'תמחיר עובדים ','original_micpal'  FROM "+name_schema+"."+name_table +" where mis_hodesh=" + i + " group by mis_oved, shnat_mas  \n"
 					+ "    on duplicate key update m" + i + "=values(m" + i + ");";
 			t.Insertintodb1(f);
 
@@ -652,7 +668,7 @@ public class Micpal{
 			String g = "insert ignore into "+name_schema+"."+name_table_101+"\n"
 					+ "            (`FullName`,`cid`,`dyear`,`id`,num_worker, `Symbol`,`SymbolName`,m" + i + ",type,source) \n"
 					+ "   SELECT   shem_oved," + cid + " as cid,`shnat_mas`,`mis_oved`, `mis_oved`, '2200' as Symbol,'סיכום מס שכר '  as SymbolName \n"
-					+ "   ,sikum_mas_sachar,'תמחיר עובדים ','original_micpal'  FROM "+name_schema+"."+name_table +" where mis_hodesh=" + i + " \n"
+					+ "   ,sum(sikum_mas_sachar),'תמחיר עובדים ','original_micpal'  FROM "+name_schema+"."+name_table +" where mis_hodesh=" + i + " group by mis_oved, shnat_mas  \n"
 					+ "    on duplicate key update m" + i + "=values(m" + i + ");";
 			t.Insertintodb1(g);
 

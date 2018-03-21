@@ -3,12 +3,12 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="lib" path="/home/user1/Documents/JARS/com.mysql.jdbc_5.1.5.jar"/>
 	<classpathentry kind="lib" path="/home/user1/Documents/JARS/commons-lang3-3.4.jar"/>
-	<classpathentry kind="lib" path="/home/user1/Documents/JARS/mysql-connector-java-5.1.38-bin.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="/home/user1/hevra/dom4j-1.1.jar"/>
 	<classpathentry kind="lib" path="/home/user1/hevra/xmlbeans-2.3.0.jar"/>
 	<classpathentry kind="lib" path="/home/user1/hevra/poi-ooxml-schemas-3.7-20101029.jar"/>
 	<classpathentry kind="lib" path="/home/user1/hevra/poi-ooxml-3.7-20101029.jar"/>
 	<classpathentry kind="lib" path="/home/user1/hevra/poi-3.8-beta2-20110408.jar"/>
+	<classpathentry kind="lib" path="/home/franck/Downloads/mysql-connector-java-5.1.46/mysql-connector-java-5.1.46.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

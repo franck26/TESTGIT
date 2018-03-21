@@ -26,7 +26,7 @@ public class ConnectionMySql {
 	public Statement stmt;
 	public String sharat = ""
 			+ "";
-	private String schema;
+	private String schema = "franck";
 
 	public ResultSet rs;
 	public static ConnectionMySql instance = null;
@@ -62,35 +62,35 @@ public class ConnectionMySql {
 
 	private ConnectionMySql(){
 
-		String [] sharatim = {"154", "150", "151"};
+		String [] sharatim = {"150", "151", "154", "171"};
 		String host = "",user = "",password = "" ;
-		this.schema = "franck";
 
 		this.sharat = (String) JOptionPane.showInputDialog(new JFrame(), "שרת : ", "??? " + "איזה שרת אתה צריך", JOptionPane.QUESTION_MESSAGE, null, sharatim, sharatim[0]);
 
 		switch (this.sharat) {
+                    
+                case "171":
+			host = "192.168.24.171:3306";
+			user = "root";
+			password = "workservermysql148";
+			break;
+                    
 		case "151":
-			host = "62.219.41.234:15106";//141.226.6.125:15106
-			this.schema = "Franck_new";
-			user = "franck";
-			password = "electron26";
-//			connectionToDB("141.226.6.125:15166","franck", "franck", "electron26");
+			host = "192.168.24.151:3306";
+			user = "root";
+			password = "kq28BF99";
 			break;
 
 		case "150":
-			host = "62.219.41.234:15006";
+			host = "192.168.24.150:3306";
 			user = "root";
 			password = "kd14NK97";
-			
-//			connectionToDB("192.168.24.150:3306","franck", "root", "kd14NK97");//141.226.6.125:15006
 			break;
 
 		case "154":
-			host = "62.219.41.234:15406";//141.226.6.125:15466
+			host = "192.168.24.154:3306";
 			user = "root";
 			password = "kq28BF99";
-			
-//			connectionToDB("141.226.6.125:15466","franck", "root", "kq28BF99");
 			break;
 
 			//		case 158:
@@ -100,7 +100,8 @@ public class ConnectionMySql {
 		default:
 			break;
 		}
-
+                
+//              System.out.println(host+user+password);
 		connectionToDB(host,this.schema, user, password);
 		
 		System.out.println("שרת " + this.sharat);
@@ -116,16 +117,24 @@ public class ConnectionMySql {
 
 	public void connectionToDB(String mysqlIP, String defaultDbName, String user, String pass)//doing the connection to mySql and creating statement.
 	{
+            
+            
+			
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
-			conn = DriverManager.getConnection("jdbc:mysql://" + mysqlIP + "/" + defaultDbName + "?"
-					+ "user=" + user + "&password=" + pass );
+                        String connection = "jdbc:mysql://" + mysqlIP + "/" + defaultDbName + "?"
+					+ "user=" + user + "&password=" + pass;
+                        
+                        System.out.println(connection);
+			this.conn = DriverManager.getConnection( connection );
 
 
-		} catch (Exception ex1) {
+		} catch (ClassNotFoundException ex1) {
 			conn = null;
-		}
-
+		} catch (SQLException e){
+                    e.printStackTrace();
+                    conn = null;
+                }
 		try {
 			stmt = conn.createStatement();
 		} catch (SQLException ex) {

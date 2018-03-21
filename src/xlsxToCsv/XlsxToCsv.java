@@ -21,7 +21,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class XlsxToCsv {
 
-	static String path = "/home/user1/Downloads/ortal";
+	static String path = "/home/user1/hevra/micpal/lotan";
 
 
 	static void convert(File inputFile, File outputFile) {

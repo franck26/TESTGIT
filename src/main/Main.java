@@ -45,9 +45,9 @@ public class Main {
 		String name_hevra_companies = "מתן חן";
 
 		int
-		year1               =   2016,
-		year2               =   2016,
-		cid 				=   910280924,
+		year1               =   2008,
+		year2               =   2008,
+		cid                 =   910280924,
 		hp					= 	515356962;
 
 		String name_table = name_hevra.toLowerCase() + "_" + year1 + "_" + year2;
